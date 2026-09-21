@@ -1,0 +1,24 @@
+⁠json
+{
+  "name": "FitPlan",
+  "short_name": "FitPlan",
+  "description": "Dein persönlicher Ernährungs- und Trainingsplan",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f2f7f4",
+  "theme_color": "#163b32",
+  "orientation": "portrait",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
