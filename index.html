@@ -246,8 +246,8 @@ nav{
  border-top:1px solid #ddd;
  display:flex;
  justify-content:center;
-z-index:100;
- padding-bottom:env(safe-area-inset-bottom);
+ z-index:100;
+padding-bottom:env(safe-area-inset-bottom);
 }
 
 nav button{
@@ -419,7 +419,6 @@ nav button.active{
 
 <main>
 
-<!-- HOME -->
 <section id="home" class="page active">
 
 <h2>Heute 👋</h2>
@@ -505,8 +504,6 @@ Halte deinen Fortschritt mit Fotos fest.
 
 </section>
 
-
-<!-- ERNÄHRUNG -->
 <section id="nutrition" class="page">
 
 <h2>🍽️ Ernährung</h2>
@@ -545,7 +542,6 @@ Halte deinen Fortschritt mit Fotos fest.
 
 </div>
 
-
 <div class="card">
 
 <h3>✨ Tagesplan</h3>
@@ -565,7 +561,6 @@ Die App erstellt aus deinen Zielwerten einen Tagesplan.
 <div id="dayPlan"></div>
 
 </div>
-
 
 <div class="card">
 
@@ -589,7 +584,6 @@ Lebensmittel eingeben, die du zuhause hast.
 
 </div>
 
-
 <div class="card">
 
 <h3>🔎 Lebensmittel suchen</h3>
@@ -607,7 +601,6 @@ placeholder="z.B. Hähnchen, Reis, Joghurt">
 <div id="foodResults"></div>
 
 </div>
-
 
 <div class="card" id="selectedFoodCard" style="display:none">
 
@@ -636,8 +629,6 @@ placeholder="z.B. Hähnchen, Reis, Joghurt">
 
 </div>
 
-
-<!-- BARCODE -->
 <div class="card">
 
 <h3>📷 Barcode Scanner</h3>
@@ -664,14 +655,12 @@ Scanner stoppen
 
 </div>
 
-
 <div class="card">
 
 <h3>Heute gegessen</h3>
 <div id="foodList"></div>
 
 </div>
-
 
 <div class="card">
 
@@ -696,8 +685,6 @@ Zurücksetzen
 
 </section>
 
-
-<!-- TRAINING -->
 <section id="training" class="page">
 
 <h2>🏋️ Training</h2>
@@ -754,8 +741,6 @@ placeholder="z.B. Kniebeugen">
 
 </section>
 
-
-<!-- FORTSCHRITT -->
 <section id="progress" class="page">
 
 <h2>📈 Fortschritt</h2>
@@ -772,9 +757,7 @@ placeholder="z.B. Kniebeugen">
 
 </div>
 
-
 <div class="card">
-
 <h3>Gewicht eintragen</h3>
 
 <input
@@ -788,7 +771,6 @@ Gewicht speichern
 </button>
 
 </div>
-
 
 <div class="card">
 
@@ -829,7 +811,6 @@ Gewicht speichern
 
 </div>
 
-
 <div class="card">
 
 <h3>📊 Gewichtsverlauf</h3>
@@ -852,7 +833,6 @@ Gewicht speichern
 </div>
 
 </div>
-
 
 <div class="card">
 
@@ -883,8 +863,6 @@ Gewicht speichern
 
 </section>
 
-
-<!-- VERLAUF -->
 <section id="history" class="page">
 
 <h2>📅 Verlauf</h2>
@@ -912,8 +890,6 @@ Gewicht speichern
 
 </section>
 
-
-<!-- FOTOS -->
 <section id="photos" class="page">
 
 <h2>📸 Fortschrittsbilder</h2>
@@ -985,7 +961,6 @@ onchange="previewPhoto('back',this)">
 
 </div>
 
-
 <div class="card">
 
 <h3>🖼️ Meine Fortschrittsbilder</h3>
@@ -997,7 +972,6 @@ onchange="previewPhoto('back',this)">
 </section>
 
 </main>
-
 
 <nav>
 
@@ -1025,12 +999,7 @@ onchange="previewPhoto('back',this)">
 
 </div>
 
-
 <script>
-
-/* =====================================================
-   DATEN
-===================================================== */
 
 const defaultData = {
  goals:{
@@ -1039,30 +1008,19 @@ const defaultData = {
   carbs:250,
   fat:75
  },
-
  days:{},
-
  weights:[],
-
  measurements:[],
-
  dayPlan:[],
-
  planSeed:0,
-
  ownedFoods:[],
-
  photos:[]
 };
 
 let data=loadData();
-
 let activeDate=getToday();
-
 let selectedFood=null;
-
 let scanner=null;
-
 let scannerRunning=false;
 
 let pendingPhotos={
@@ -1070,23 +1028,17 @@ let pendingPhotos={
  side:null,
  back:null
 };
-/* =====================================================
-   DATUM
-===================================================== */
 
 function getToday(){
 
  const d=new Date();
 
  const y=d.getFullYear();
-
  const m=String(d.getMonth()+1).padStart(2,"0");
-
  const day=String(d.getDate()).padStart(2,"0");
 
  return `${y}-${m}-${day}`;
 }
-
 
 function formatDate(date){
 
@@ -1095,22 +1047,17 @@ function formatDate(date){
  const parts=date.split("-");
 
  if(parts.length!==3)return date;
-
- return `${parts[2]}.${parts[1]}.${parts[0]}`;
+return `${parts[2]}.${parts[1]}.${parts[0]}`;
 }
-
 
 function dateToString(d){
 
  const y=d.getFullYear();
-
  const m=String(d.getMonth()+1).padStart(2,"0");
-
  const day=String(d.getDate()).padStart(2,"0");
 
  return `${y}-${m}-${day}`;
 }
-
 
 function getDay(date=activeDate){
 
@@ -1121,16 +1068,10 @@ function getDay(date=activeDate){
    exercises:[],
    water:0
   };
-
  }
 
  return data.days[date];
 }
-
-
-/* =====================================================
-   DATEN SPEICHERN
-===================================================== */
 
 function saveData(){
 
@@ -1156,11 +1097,6 @@ function saveData(){
   return false;
  }
 }
-
-
-/* =====================================================
-   DATEN LADEN
-===================================================== */
 
 function loadData(){
 
@@ -1234,11 +1170,6 @@ function loadData(){
  );
 }
 
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
 function openPage(page){
 
  document.querySelectorAll(".page")
@@ -1287,11 +1218,6 @@ function openPage(page){
  window.scrollTo(0,0);
 }
 
-
-/* =====================================================
-   AKTIVER TAG
-===================================================== */
-
 function changeActiveDate(){
 
  activeDate=
@@ -1301,11 +1227,10 @@ function changeActiveDate(){
  updateAll();
 }
 
-
 function changeTrainingDate(){
 
  activeDate=
-document.getElementById("trainingDate").value
+  document.getElementById("trainingDate").value
   ||getToday();
 
  document.getElementById("activeDate").value=
@@ -1313,11 +1238,6 @@ document.getElementById("trainingDate").value
 
  updateAll();
 }
-
-
-/* =====================================================
-   ZIELE
-===================================================== */
 
 function loadGoalInputs(){
 
@@ -1333,7 +1253,6 @@ function loadGoalInputs(){
  document.getElementById("goalFat").value=
   data.goals.fat;
 }
-
 
 function saveGoals(){
 
@@ -1363,11 +1282,6 @@ function saveGoals(){
  updateAll();
 }
 
-
-/* =====================================================
-   NÄHRWERTE
-===================================================== */
-
 const nutrition={
 
 "Haferflocken":[370,13.5,59,7],
@@ -1394,11 +1308,9 @@ const nutrition={
 "Hüttenkäse":[98,12,3,4]
 };
 
-
 function ingredientNutrition(name,grams){
 
  const n=nutrition[name]||[0,0,0,0];
-
  const f=grams/100;
 
  return{
@@ -1408,11 +1320,6 @@ function ingredientNutrition(name,grams){
   fat:n[3]*f
  };
 }
-
-
-/* =====================================================
-   REZEPTE
-===================================================== */
 
 const recipes=[
 
@@ -1586,7 +1493,6 @@ instruction:
 
 ];
 
-
 function recipeNutrition(recipe){
 
  const total={
@@ -1610,11 +1516,6 @@ function recipeNutrition(recipe){
 
  return total;
 }
-
-
-/* =====================================================
-   TAGESPLAN
-===================================================== */
 
 function generateDayPlan(){
 
@@ -1671,7 +1572,6 @@ function generateDayPlan(){
 
  renderDayPlan();
 }
-
 
 function renderDayPlan(){
 
@@ -1768,11 +1668,6 @@ function renderDayPlan(){
  box.innerHTML=html;
 }
 
-
-/* =====================================================
-   PLAN ÜBERNEHMEN
-===================================================== */
-
 function acceptRecipe(index){
 
  const recipe=data.dayPlan[index];
@@ -1809,7 +1704,6 @@ function acceptRecipe(index){
   " übernommen."
  );
 }
-
 
 function acceptWholePlan(){
 
@@ -1853,12 +1747,6 @@ function acceptWholePlan(){
   " übernommen."
  );
 }
-
-
-/* =====================================================
-   VORHANDENE LEBENSMITTEL
-===================================================== */
-
 function addOwnedFoodRow(name="",grams=""){
 
  const box=document.getElementById("ownedFoods");
@@ -1890,7 +1778,6 @@ function addOwnedFoodRow(name="",grams=""){
  box.appendChild(row);
 }
 
-
 function readOwnedFoods(){
 
  const rows=document.querySelectorAll(".owned-food");
@@ -1913,7 +1800,6 @@ function readOwnedFoods(){
 
  return result;
 }
-
 
 function generateFromOwnedFoods(){
 
@@ -1981,11 +1867,6 @@ function generateFromOwnedFoods(){
  renderDayPlan();
 }
 
-
-/* =====================================================
-   OPEN FOOD FACTS
-===================================================== */
-
 async function searchFoods(){
 
  const term=
@@ -1994,7 +1875,8 @@ async function searchFoods(){
 
  const box=
   document.getElementById("foodResults");
-if(!term){
+
+ if(!term){
 
   box.innerHTML=
    "<p class='warning'>Bitte Lebensmittel eingeben.</p>";
@@ -2112,14 +1994,8 @@ if(!term){
  }
 }
 
-
-/* =====================================================
-   AUSGEWÄHLTES LEBENSMITTEL
-===================================================== */
-
 function updateSelectedFood(){
-
- if(!selectedFood)return;
+if(!selectedFood)return;
 
  const grams=
   Number(
@@ -2142,10 +2018,8 @@ function updateSelectedFood(){
  `;
 }
 
-
 document.getElementById("foodGrams")
 .addEventListener("input",updateSelectedFood);
-
 
 function addSelectedFood(){
 
@@ -2195,11 +2069,6 @@ function addSelectedFood(){
  updateAll();
 }
 
-
-/* =====================================================
-   BARCODE SCANNER
-===================================================== */
-
 async function startScanner(){
 
  const status=
@@ -2231,8 +2100,7 @@ async function startScanner(){
    "📷 Kamera wird gestartet...";
 
   const config={
-fps:10,
-
+   fps:10,
    qrbox:{
     width:280,
     height:130
@@ -2282,7 +2150,6 @@ fps:10,
   console.error("Scanner Fehler:",error);
 
   scannerRunning=false;
-
   scanner=null;
 
   document.getElementById(
@@ -2294,7 +2161,6 @@ fps:10,
    "Bitte Kamerazugriff erlauben und die Seite über HTTPS öffnen.";
  }
 }
-
 
 async function stopScanner(){
 
@@ -2322,7 +2188,6 @@ async function stopScanner(){
  }catch(e){}
 
  scanner=null;
-
  scannerRunning=false;
 
  document.getElementById(
@@ -2334,11 +2199,6 @@ async function stopScanner(){
  ).textContent=
   "Scanner gestoppt.";
 }
-
-
-/* =====================================================
-   WASSER
-===================================================== */
 
 function addWater(amount){
 
@@ -2352,7 +2212,6 @@ function addWater(amount){
  updateAll();
 }
 
-
 function resetWater(){
 
  const day=getDay(activeDate);
@@ -2364,11 +2223,6 @@ function resetWater(){
  updateAll();
 }
 
-
-/* =====================================================
-   LEBENSMITTEL LÖSCHEN
-===================================================== */
-
 function deleteFood(index){
 
  const day=getDay(activeDate);
@@ -2379,11 +2233,6 @@ function deleteFood(index){
 
  updateAll();
 }
-
-
-/* =====================================================
-   TRAINING
-===================================================== */
 
 function addExercise(){
 
@@ -2398,24 +2247,7 @@ function addExercise(){
  }
 
  const day=getDay(activeDate);
-
- day.exercises.push({
-
-  name,
-
-  sets:
-   Number(
-    document.getElementById("exerciseSets").value
-   )||0,
-
-  reps:
-   Number(
-    document.getElementById("exerciseReps").value
-   )||0,
-
-  weight:
-   Number(
-    document.getElementById("exerciseWeight").value
+document.getElementById("exerciseWeight").value
    )||0
  });
 
@@ -2429,7 +2261,6 @@ function addExercise(){
  updateAll();
 }
 
-
 function deleteExercise(index){
 
  const day=getDay(activeDate);
@@ -2440,7 +2271,6 @@ function deleteExercise(index){
 
  updateAll();
 }
-
 
 function renderExercises(){
 
@@ -2497,11 +2327,6 @@ function renderExercises(){
   " Übungen eingetragen.";
 }
 
-
-/* =====================================================
-   GEWICHT
-===================================================== */
-
 function saveWeight(){
 
  const value=
@@ -2531,7 +2356,6 @@ function saveWeight(){
  drawChart();
 }
 
-
 function renderWeightTable(){
 
  const box=
@@ -2557,11 +2381,6 @@ function renderWeightTable(){
 
   `).join("");
 }
-
-
-/* =====================================================
-   KÖRPERMASSE
-===================================================== */
 
 function saveMeasurements(){
 
@@ -2613,7 +2432,6 @@ function saveMeasurements(){
  updateAll();
 }
 
-
 function renderMeasurementTable(){
 
  const box=
@@ -2645,11 +2463,6 @@ function renderMeasurementTable(){
 
   `).join("");
 }
-
-
-/* =====================================================
-   GEWICHTSKURVE
-===================================================== */
 
 function drawChart(){
 
@@ -2692,11 +2505,7 @@ function drawChart(){
 
  const min=Math.min(...values)-1;
  const max=Math.max(...values)+1;
-
- ctx.strokeStyle="#d8e2dd";
- ctx.lineWidth=1;
-
- ctx.beginPath();
+ctx.beginPath();
 
  ctx.moveTo(40,20);
  ctx.lineTo(40,height-30);
@@ -2762,9 +2571,6 @@ function drawChart(){
   );
  });
 }
-/* =====================================================
-   ESSEN RENDERN
-===================================================== */
 
 function renderFoods(){
 
@@ -2826,11 +2632,6 @@ function renderFoods(){
  home.innerHTML=html;
 }
 
-
-/* =====================================================
-   TAGESWERTE
-===================================================== */
-
 function calculateDay(date){
 
  const day=getDay(date);
@@ -2858,11 +2659,6 @@ function calculateDay(date){
   exercises:day.exercises
  };
 }
-
-
-/* =====================================================
-   HAUPT-AKTUALISIERUNG
-===================================================== */
 
 function updateAll(){
 
@@ -2933,11 +2729,6 @@ function updateAll(){
  renderDayPlan();
 }
 
-
-/* =====================================================
-   VERLAUF
-===================================================== */
-
 function renderHistory(){
 
  const date=
@@ -2951,7 +2742,26 @@ function renderHistory(){
 
  let html=`
 
- <div class="history-day">
+ ctx.strokeStyle="#d8e2dd";
+ ctx.lineWidth=1;
+
+ day.exercises.push({
+
+  name,
+
+  sets:
+   Number(
+    document.getElementById("exerciseSets").value
+   )||0,
+
+  reps:
+   Number(
+    document.getElementById("exerciseReps").value
+   )||0,
+
+  weight:
+   Number(
+<div class="history-day">
 
  <h3>📅 ${formatDate(date)}</h3>
 
@@ -2971,7 +2781,8 @@ function renderHistory(){
  `;
 
  if(day.foods.length){
-html+=day.foods.map(f=>`
+
+  html+=day.foods.map(f=>`
 
    <div class="item">
 
@@ -3031,11 +2842,6 @@ html+=day.foods.map(f=>`
  box.innerHTML=html;
 }
 
-
-/* =====================================================
-   WOCHENÜBERSICHT
-===================================================== */
-
 function getMonday(dateString){
 
  const d=
@@ -3050,7 +2856,6 @@ function getMonday(dateString){
 
  return d;
 }
-
 
 function renderWeek(){
 
@@ -3147,11 +2952,6 @@ function renderWeek(){
  .innerHTML=daysHtml;
 }
 
-
-/* =====================================================
-   FORTSCHRITTSBILDER
-===================================================== */
-
 function previewPhoto(type,input){
 
  const file=input.files[0];
@@ -3181,7 +2981,6 @@ function previewPhoto(type,input){
 
  reader.readAsDataURL(file);
 }
-
 
 function saveProgressPhotos(){
 
@@ -3225,10 +3024,10 @@ function saveProgressPhotos(){
    front:pendingPhotos.front||null,
    side:pendingPhotos.side||null,
    back:pendingPhotos.back||null
-
-  });
+});
  }
-if(!saveData())return;
+
+ if(!saveData())return;
 
  pendingPhotos={
   front:null,
@@ -3248,7 +3047,6 @@ if(!saveData())return;
 
  renderPhotoHistory();
 }
-
 
 function renderPhotoHistory(){
 
@@ -3322,7 +3120,6 @@ function renderPhotoHistory(){
  `).join("");
 }
 
-
 function deletePhoto(index){
 
  const sorted=
@@ -3350,11 +3147,6 @@ function deletePhoto(index){
  renderPhotoHistory();
 }
 
-
-/* =====================================================
-   SICHERES HTML
-===================================================== */
-
 function escapeHtml(text){
 
  return String(text)
@@ -3364,11 +3156,6 @@ function escapeHtml(text){
  .replace(/"/g,"&quot;")
  .replace(/'/g,"&#039;");
 }
-
-
-/* =====================================================
-   START
-===================================================== */
 
 activeDate=getToday();
 
@@ -3406,11 +3193,6 @@ renderHistory();
 renderWeek();
 
 renderPhotoHistory();
-
-
-/* =====================================================
-   SERVICE WORKER
-===================================================== */
 
 if("serviceWorker" in navigator){
 
