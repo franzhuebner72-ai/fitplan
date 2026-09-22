@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+
 <meta name="theme-color" content="#163b32">
-<meta name="description" content="FitPlan – Ernährung, Tagespläne, Training und Fortschritt">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 <link rel="manifest" href="manifest.json">
 
 <title>FitPlan 💪</title>
 
+<!-- Barcode-Scanner für iPhone -->
+<script src="https://unpkg.com/html5-qrcode" defer></script>
+
 <style>
-*{box-sizing:border-box}
+
+*{
+ box-sizing:border-box;
+}
 
 body{
  margin:0;
@@ -33,13 +46,27 @@ header{
  border-radius:0 0 25px 25px;
 }
 
-header h1{margin:0;font-size:30px}
-header p{margin:5px 0 0;color:#cce8dc}
+header h1{
+ margin:0;
+ font-size:30px;
+}
 
-main{padding:17px}
+header p{
+ margin:5px 0 0;
+ color:#cce8dc;
+}
 
-.page{display:none}
-.page.active{display:block}
+main{
+ padding:17px;
+}
+
+.page{
+ display:none;
+}
+
+.page.active{
+ display:block;
+}
 
 .card{
  background:white;
@@ -49,8 +76,13 @@ main{padding:17px}
  box-shadow:0 3px 12px rgba(0,0,0,.06);
 }
 
-h2{margin-top:0}
-h3{margin-top:0}
+h2{
+ margin-top:0;
+}
+
+h3{
+ margin-top:0;
+}
 
 .small{
  color:#69756f;
@@ -81,7 +113,8 @@ h3{margin-top:0}
  margin-top:5px;
 }
 
-input,select{
+input,
+select{
  width:100%;
  padding:13px;
  margin:5px 0 12px;
@@ -108,12 +141,20 @@ button.secondary{
  color:#163b32;
 }
 
-button.orange{background:#f59e0b}
-button.blue{background:#3b82f6}
-button.red{background:#e74c3c}
+button.orange{
+ background:#f59e0b;
+}
 
-button:active{
- transform:scale(.98);
+button.blue{
+ background:#3b82f6;
+}
+
+button.red{
+ background:#e74c3c;
+}
+
+button.dark{
+ background:#163b32;
 }
 
 .row{
@@ -121,7 +162,9 @@ button:active{
  gap:10px;
 }
 
-.row>*{flex:1}
+.row>*{
+ flex:1;
+}
 
 .progress{
  height:10px;
@@ -142,7 +185,9 @@ button:active{
  border-bottom:1px solid #edf1ef;
 }
 
-.item:last-child{border-bottom:0}
+.item:last-child{
+ border-bottom:0;
+}
 
 .empty{
  color:#69756f;
@@ -201,39 +246,89 @@ button:active{
  gap:8px;
 }
 
-.search-row input{flex:1}
-.search-row button{height:48px;margin-top:5px}
+.search-row input{
+ flex:1;
+}
+
+.search-row button{
+ height:48px;
+ margin-top:5px;
+}
 
 .product{
  padding:12px;
- border:1px solid #dce5e1;
+border:1px solid #dce5e1;
  border-radius:12px;
  margin:8px 0;
  cursor:pointer;
 }
 
-.product:hover{
+.scanner-box{
+ border:2px dashed #39b87f;
+ padding:15px;
+ border-radius:15px;
+ text-align:center;
+ background:#f7fffb;
+}
+
+#reader{
+ width:100%;
+ margin-top:15px;
+}
+
+#reader video{
+ border-radius:12px;
+}
+
+.history-day{
+ border:1px solid #dce8e2;
+ border-radius:15px;
+ padding:15px;
+ margin:10px 0;
+ background:#fbfffd;
+}
+
+.history-header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+}
+
+.photo-grid{
+ display:grid;
+ grid-template-columns:1fr 1fr 1fr;
+ gap:8px;
+}
+
+.photo-box{
  background:#edf7f2;
+ border-radius:12px;
+ min-height:130px;
+ overflow:hidden;
+ text-align:center;
+ padding:8px;
 }
 
-.chart{
+.photo-box img{
  width:100%;
- height:240px;
- background:#fafcfb;
- border-radius:14px;
- border:1px solid #e0e8e4;
+ height:130px;
+ object-fit:cover;
+ border-radius:8px;
 }
 
-table{
- width:100%;
- border-collapse:collapse;
+.photo-box input{
+ font-size:12px;
+}
+
+.photo-label{
+ font-weight:700;
  font-size:13px;
+ margin-bottom:5px;
 }
 
-th,td{
- padding:8px 5px;
- border-bottom:1px solid #e5ebe8;
- text-align:left;
+canvas{
+ max-width:100%;
 }
 
 nav{
@@ -256,7 +351,7 @@ nav button{
  padding:7px 2px;
  border-radius:0;
  background:white;
-color:#68736e;
+ color:#68736e;
  font-size:11px;
 }
 
@@ -278,36 +373,23 @@ nav button.active{
  color:#c0392b;
 }
 
-.owned-food{
- display:flex;
- gap:8px;
- margin-bottom:8px;
-}
-
-.owned-food input{
- margin:0;
-}
-
-.section-title{
- margin-top:20px;
-}
-
-.install{
- display:none;
-}
-
-.scanner-box{
- border:2px dashed #39b87f;
- padding:20px;
- border-radius:15px;
- text-align:center;
- background:#f7fffb;
-}
-
 @media(max-width:500px){
- .row{flex-direction:column;gap:0}
- .grid{grid-template-columns:1fr 1fr}
+
+ .row{
+  flex-direction:column;
+  gap:0;
+ }
+
+ .grid{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .photo-grid{
+  grid-template-columns:1fr 1fr 1fr;
+ }
+
 }
+
 </style>
 </head>
 
@@ -316,89 +398,162 @@ nav button.active{
 <div class="app">
 
 <header>
+
 <h1>FitPlan 💪</h1>
-<p>Dein persönlicher Ernährungs- und Trainingsplan</p>
+
+<p>
+Dein persönlicher Ernährungs- und Trainingsplan
+</p>
+
 </header>
 
 <main>
 
-<!-- HOME -->
+
+<!-- =====================================================
+     HOME
+===================================================== -->
+
 <section id="home" class="page active">
 
 <h2>Heute 👋</h2>
 
 <div class="card">
-<div class="small">Kalorien</div>
+
+<div class="small">
+Kalorien
+</div>
 
 <div class="big">
-<span id="todayCalories">0</span> /
-<span id="goalCalHome">2300</span> kcal
+
+<span id="todayCalories">0</span>
+ /
+<span id="goalCalHome">2300</span>
+ kcal
+
 </div>
 
 <div class="progress">
-<div id="calorieProgress" class="progress-bar"></div>
+
+<div id="calorieProgress"
+     class="progress-bar"></div>
+
 </div>
+
 </div>
+
 
 <div class="grid">
 
 <div class="stat">
+
 Protein
-<strong><span id="todayProtein">0</span> g</strong>
+
+<strong>
+<span id="todayProtein">0</span> g
+</strong>
+
 <span class="small">
 Ziel <span id="goalProteinHome">130</span> g
 </span>
+
 </div>
 
+
 <div class="stat">
+
 Kohlenhydrate
-<strong><span id="todayCarbs">0</span> g</strong>
+
+<strong>
+<span id="todayCarbs">0</span> g
+</strong>
+
 <span class="small">
 Ziel <span id="goalCarbsHome">250</span> g
 </span>
+
 </div>
 
+
 <div class="stat">
+
 Fett
-<strong><span id="todayFat">0</span> g</strong>
+
+<strong>
+<span id="todayFat">0</span> g
+</strong>
+
 <span class="small">
 Ziel <span id="goalFatHome">75</span> g
 </span>
+
 </div>
+
 
 <div class="stat">
+
 Wasser
-<strong><span id="todayWater">0</span> ml</strong>
-<span class="small">Ziel 2500 ml</span>
+
+<strong>
+<span id="todayWater">0</span> ml
+</strong>
+
+<span class="small">
+Ziel 2500 ml
+</span>
+
 </div>
 
 </div>
+
 
 <div class="card">
+
 <h3>🍽️ Heute gegessen</h3>
+
 <div id="homeFoods"></div>
 
 <button onclick="openPage('nutrition')">
 + Lebensmittel
 </button>
+
 </div>
 
+
 <div class="card">
+
 <h3>🏋️ Training</h3>
-<div id="homeTraining">Noch kein Training.</div>
+
+<div id="homeTraining">
+Noch kein Training.
+</div>
 
 <button onclick="openPage('training')">
 Training öffnen
 </button>
+
+</div>
+
+
+<div class="card">
+
+<h3>📅 Heute</h3>
+
+<div id="todaySummary"></div>
+
 </div>
 
 </section>
 
 
-<!-- ERNÄHRUNG -->
+<!-- =====================================================
+     ERNÄHRUNG
+===================================================== -->
+
 <section id="nutrition" class="page">
 
 <h2>🍽️ Ernährung</h2>
+
 
 <div class="card">
 
@@ -407,53 +562,79 @@ Training öffnen
 <div class="grid">
 
 <div>
+
 <label>Kalorien</label>
-<input id="goalCalories" type="number">
+
+<input id="goalCalories"
+       type="number">
+
 </div>
 
+
 <div>
+
 <label>Protein</label>
-<input id="goalProtein" type="number">
+
+<input id="goalProtein"
+       type="number">
+
 </div>
 
+
 <div>
+
 <label>Kohlenhydrate</label>
-<input id="goalCarbs" type="number">
+
+<input id="goalCarbs"
+type="number">
+
 </div>
+
 
 <div>
+
 <label>Fett</label>
-<input id="goalFat" type="number">
+
+<input id="goalFat"
+       type="number">
+
 </div>
 
 </div>
+
 
 <button onclick="saveGoals()">
 💾 Ziele speichern
 </button>
 
-<p id="goalMessage" class="success"></p>
+<p id="goalMessage"
+   class="success"></p>
 
 </div>
 
 
 <!-- TAGESPLAN -->
+
 <div class="card">
 
 <h3>✨ Tagesplan</h3>
 
 <p class="small">
-Die App erstellt aus deinen Zielwerten einen Tagesplan.
-Bei jedem Klick entsteht eine neue Variante.
-Reis, Nudeln, Fleisch und Kartoffeln werden als Rohgewicht angegeben.
+Die App erstellt einen Tagesplan anhand deiner Ziele.
 </p>
 
-<button class="orange" onclick="generateDayPlan()">
+<button class="orange"
+        onclick="generateDayPlan()">
+
 ✨ Neuer Tagesplan
+
 </button>
 
-<button class="secondary" onclick="acceptWholePlan()">
+<button class="secondary"
+        onclick="acceptWholePlan()">
+
 ✓ Ganzen Tagesplan übernehmen
+
 </button>
 
 <div id="dayPlan"></div>
@@ -461,41 +642,16 @@ Reis, Nudeln, Fleisch und Kartoffeln werden als Rohgewicht angegeben.
 </div>
 
 
-<!-- EIGENE LEBENSMITTEL -->
-<div class="card">
+<!-- SUCHEN -->
 
-<h3>🧺 Meine vorhandenen Lebensmittel</h3>
-
-<p class="small">
-Gib hier Lebensmittel ein, die du zuhause hast.
-Die App versucht daraus einen passenden Tagesplan zu erstellen.
-</p>
-
-<div id="ownedFoods"></div>
-
-<button onclick="addOwnedFoodRow()">
-+ Lebensmittel hinzufügen
-</button>
-
-<br>
-
-<button class="blue" onclick="generateFromOwnedFoods()">
-🧺 Menü aus meinen Lebensmitteln
-</button>
-
-</div>
-
-
-<!-- SUCHE -->
 <div class="card">
 
 <h3>🔎 Lebensmittel suchen</h3>
 
 <div class="search-row">
 
-<input
-id="foodSearch"
-placeholder="z.B. Hähnchen, Reis, Joghurt">
+<input id="foodSearch"
+       placeholder="z.B. Hähnchen, Reis, Joghurt">
 
 <button onclick="searchFoods()">
 Suchen
@@ -506,20 +662,31 @@ Suchen
 <div id="foodResults"></div>
 
 </div>
-<div class="card" id="selectedFoodCard" style="display:none">
 
-<h3>Lebensmittel hinzufügen</h3>
+
+<!-- AUSGEWÄHLTES PRODUKT -->
+
+<div class="card"
+     id="selectedFoodCard"
+     style="display:none">
+
+<h3>
+Lebensmittel hinzufügen
+</h3>
 
 <div id="selectedFoodName"></div>
 
-<label>Menge in Gramm</label>
+<label>
+Menge in Gramm
+</label>
 
-<input
-id="foodGrams"
-type="number"
-value="100">
+<input id="foodGrams"
+       type="number"
+       value="100">
 
-<label>Mahlzeit</label>
+<label>
+Mahlzeit
+</label>
 
 <select id="foodMeal">
 
@@ -540,53 +707,84 @@ value="100">
 
 
 <!-- BARCODE -->
+
 <div class="card">
 
-<h3>📷 Barcode Scanner</h3>
+<h3>
+📷 Barcode Scanner
+</h3>
 
 <div class="scanner-box">
 
 <p>
-Scanne einen Lebensmittel-Barcode mit deiner Kamera.
+Scanne einen Lebensmittel-Barcode mit deiner iPhone-Kamera.
 </p>
 
-<button class="blue" onclick="startScanner()">
+<div id="reader"></div>
+
+<button class="blue"
+        onclick="startScanner()">
+
 📷 Scanner starten
+
 </button>
 
-<div id="scannerStatus" class="small"></div>
+<button class="secondary"
+        onclick="stopScanner()">
+
+Scanner stoppen
+
+</button>
+
+<div id="scannerStatus"
+     class="small">
 
 </div>
 
 </div>
 
+</div>
+
+
+<!-- HEUTE -->
 
 <div class="card">
 
-<h3>Heute</h3>
+<h3>
+Heute gegessen
+</h3>
+
 <div id="foodList"></div>
 
 </div>
 
 
+<!-- WASSER -->
+
 <div class="card">
 
-<h3>💧 Wasser</h3>
+<h3>
+💧 Wasser
+</h3>
 
 <p>
 Heute:
-<b><span id="waterValue">0</span> ml</b>
+<b>
+<span id="waterValue">0</span> ml
+</b>
 </p>
 
 <button onclick="addWater(250)">
 +250 ml
 </button>
 
-<button class="secondary" onclick="addWater(500)">
+<button class="secondary"
+        onclick="addWater(500)">
 +500 ml
 </button>
 
-<button class="secondary" onclick="resetWater()">
+<button class="secondary"
+        onclick="resetWater()">
 Zurücksetzen
 </button>
 
@@ -595,39 +793,73 @@ Zurücksetzen
 </section>
 
 
-<!-- TRAINING -->
+<!-- =====================================================
+     TRAINING
+===================================================== -->
+
 <section id="training" class="page">
 
-<h2>🏋️ Training</h2>
+<h2>
+🏋️ Training
+</h2>
+
 
 <div class="card">
 
-<h3>Training hinzufügen</h3>
+<h3>
+Training hinzufügen
+</h3>
 
-<label>Übung</label>
+<label>
+Übung
+</label>
 
-<input
-id="exerciseName"
-placeholder="z.B. Kniebeugen">
+<input id="exerciseName"
+       placeholder="z.B. Kniebeugen">
+
 
 <div class="row">
 
 <div>
-<label>Sätze</label>
-<input id="exerciseSets" type="number" value="3">
+
+<label>
+Sätze
+</label>
+
+<input id="exerciseSets"
+       type="number"
+       value="3">
+
 </div>
+
 
 <div>
-<label>Wiederholungen</label>
-<input id="exerciseReps" type="number" value="10">
+
+<label>
+Wiederholungen
+</label>
+
+<input id="exerciseReps"
+       type="number"
+       value="10">
+
 </div>
+
 
 <div>
-<label>Gewicht kg</label>
-<input id="exerciseWeight" type="number" value="0">
+
+<label>
+Gewicht kg
+</label>
+
+<input id="exerciseWeight"
+       type="number"
+       value="0">
+
 </div>
 
 </div>
+
 
 <button onclick="addExercise()">
 + Übung hinzufügen
@@ -638,7 +870,9 @@ placeholder="z.B. Kniebeugen">
 
 <div class="card">
 
-<h3>Heutiges Training</h3>
+<h3>
+Heutiges Training
+</h3>
 
 <div id="exerciseList"></div>
 
@@ -647,33 +881,83 @@ placeholder="z.B. Kniebeugen">
 </section>
 
 
-<!-- FORTSCHRITT -->
+<!-- =====================================================
+     VERLAUF
+===================================================== -->
+
+<section id="history" class="page">
+
+<h2>
+📅 Verlauf
+</h2>
+
+
+<div class="card">
+
+<h3>
+Woche
+</h3>
+
+<div id="weekSummary"></div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+Tagesverlauf
+</h3>
+
+<div id="historyList"></div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     FORTSCHRITT
+===================================================== -->
+
 <section id="progress" class="page">
 
-<h2>📈 Fortschritt</h2>
+<h2>
+📈 Fortschritt
+</h2>
+
 
 <div class="card">
 
-<h3>Gewicht</h3>
-
+<h3>
+Gewicht
+</h3>
 <div class="big">
-<span id="currentWeight">-</span> kg
+
+<span id="currentWeight">
+-
+</span>
+kg
+
 </div>
 
-<canvas id="weightChart" class="chart"></canvas>
+<canvas id="weightChart"
+        height="240">
+</canvas>
 
 </div>
 
 
 <div class="card">
 
-<h3>Gewicht eintragen</h3>
+<h3>
+Gewicht eintragen
+</h3>
 
-<input
-id="weightInput"
-type="number"
-step="0.1"
-placeholder="z.B. 76.4">
+<input id="weightInput"
+       type="number"
+       step="0.1"
+       placeholder="z.B. 76.4">
 
 <button onclick="saveWeight()">
 Gewicht speichern
@@ -684,33 +968,45 @@ Gewicht speichern
 
 <div class="card">
 
-<h3>📏 Körpermaße</h3>
+<h3>
+📏 Körpermaße
+</h3>
 
 <div class="grid">
 
 <div>
 <label>Brust cm</label>
-<input id="measureChest" type="number" step="0.1">
+<input id="measureChest"
+       type="number"
+       step="0.1">
 </div>
 
 <div>
 <label>Taille cm</label>
-<input id="measureWaist" type="number" step="0.1">
+<input id="measureWaist"
+       type="number"
+       step="0.1">
 </div>
 
 <div>
 <label>Hüfte cm</label>
-<input id="measureHip" type="number" step="0.1">
+<input id="measureHip"
+       type="number"
+       step="0.1">
 </div>
 
 <div>
 <label>Oberschenkel cm</label>
-<input id="measureThigh" type="number" step="0.1">
+<input id="measureThigh"
+       type="number"
+       step="0.1">
 </div>
 
 <div>
 <label>Oberarm cm</label>
-<input id="measureArm" type="number" step="0.1">
+<input id="measureArm"
+       type="number"
+       step="0.1">
 </div>
 
 </div>
@@ -722,33 +1018,86 @@ Gewicht speichern
 </div>
 
 
+<!-- FORTSCHRITTSBILDER -->
+
 <div class="card">
 
-<h3>📊 Verlauf</h3>
+<h3>
+📸 Fortschrittsbilder
+</h3>
 
-<div style="overflow-x:auto">
+<p class="small">
+Speichere Bilder von vorne, von der Seite und von hinten.
+Die Bilder werden mit dem heutigen Datum gespeichert.
+</p>
 
-<table>
+<div class="photo-grid">
 
-<thead>
+<div class="photo-box">
 
-<tr>
-<th>Datum</th>
-<th>Gewicht</th>
-<th>Brust</th>
-<th>Taille</th>
-<th>Hüfte</th>
-<th>Obers.</th>
-<th>Arm</th>
-</tr>
+<div class="photo-label">
+Vorne
+</div>
 
-</thead>
+<img id="photoFrontPreview"
+     style="display:none">
 
-<tbody id="historyTable"></tbody>
-
-</table>
+<input id="photoFront"
+       type="file"
+       accept="image/*"
+       capture="environment"
+       onchange="saveProgressPhoto('front',this)">
 
 </div>
+
+
+<div class="photo-box">
+
+<div class="photo-label">
+Seite
+</div>
+
+<img id="photoSidePreview"
+     style="display:none">
+
+<input id="photoSide"
+       type="file"
+       accept="image/*"
+       capture="environment"
+       onchange="saveProgressPhoto('side',this)">
+
+</div>
+
+
+<div class="photo-box">
+
+<div class="photo-label">
+Hinten
+</div>
+
+<img id="photoBackPreview"
+     style="display:none">
+
+<input id="photoBack"
+       type="file"
+       accept="image/*"
+       capture="environment"
+       onchange="saveProgressPhoto('back',this)">
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+🖼️ Gespeicherte Fortschrittsbilder
+</h3>
+
+<div id="photoHistory"></div>
 
 </div>
 
@@ -757,26 +1106,55 @@ Gewicht speichern
 </main>
 
 
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
 <nav>
 
-<button class="active" onclick="openPage('home')">
-🏠<br>Home
+<button class="active"
+        onclick="openPage('home')">
+
+🏠
+<br>
+Home
+
 </button>
 
+
 <button onclick="openPage('nutrition')">
-🍽️<br>Essen
+
+🍽️
+<br>
+Essen
+
 </button>
+
 
 <button onclick="openPage('training')">
-🏋️<br>Training
+
+🏋️
+<br>
+Training
+
 </button>
+
+
+<button onclick="openPage('history')">
+
+📅
+<br>
+Verlauf
+
+</button>
+
 
 <button onclick="openPage('progress')">
-📈<br>Fortschritt
-</button>
 
-<button onclick="openPage('nutrition')">
-⚙️<br>Ziele
+📈
+<br>
+Fortschritt
+
 </button>
 
 </nav>
@@ -787,235 +1165,94 @@ Gewicht speichern
 <script>
 
 /* =====================================================
-   DATEN
+   GRUNDDATEN
 ===================================================== */
 
-const defaultData={
+const defaultData = {
+
  goals:{
   calories:2300,
   protein:130,
   carbs:250,
   fat:75
  },
- foods:[],
- exercises:[],
- water:0,
-weights:[],
+
+ days:{},
+
+ weights:[],
+
  measurements:[],
+
+ photos:[],
+
  dayPlan:[],
- planSeed:0,
- ownedFoods:[]
+
+ planSeed:0
+
 };
 
-let data=loadData();
-let selectedFood=null;
+
+let data = loadData();
+
+let selectedFood = null;
+
+let html5QrCode = null;
+
+let scannerRunning = false;
 
 
 /* =====================================================
-   REZEPTE
+   DATUM
 ===================================================== */
 
-const recipes=[
+function todayKey(){
 
-{
-name:"Protein-Porridge mit Banane",
-type:"Frühstück",
-ingredients:[
-["Haferflocken",70],
-["Magerquark",200],
-["Banane",120],
-["Mandeln",10]
-],
-instruction:
-"Haferflocken mit Wasser oder Milch erwärmen. Magerquark unterrühren. Banane schneiden und mit den Mandeln darübergeben."
-},
+ const d = new Date();
 
-{
-name:"Rührei mit Vollkornbrot",
-type:"Frühstück",
-ingredients:[
-["Ei",150],
-["Vollkornbrot",80],
-["Tomate",150],
-["Avocado",40]
-],
-instruction:
-"Eier verquirlen und in einer beschichteten Pfanne stocken lassen. Tomaten schneiden. Mit Vollkornbrot und Avocado servieren."
-},
+ const y = d.getFullYear();
 
-{
-name:"Skyr-Bowl mit Beeren",
-type:"Frühstück",
-ingredients:[
-["Skyr",250],
-["Haferflocken",50],
-["Beeren",150],
-["Mandeln",15]
-],
-instruction:
-"Skyr in eine Schüssel geben. Haferflocken, Beeren und Mandeln darauf verteilen."
-},
+ const m = String(d.getMonth()+1).padStart(2,"0");
 
-{
-name:"Hähnchen-Reis-Bowl",
-type:"Mittagessen",
-ingredients:[
-["Hähnchenbrust",180],
-["Reis trocken",80],
-["Brokkoli",200],
-["Olivenöl",10]
-],
-instruction:
-"Reis trocken abwiegen und anschließend kochen. Hähnchen würzen und durchgaren. Brokkoli dünsten. Alles zusammen anrichten und Öl darübergeben."
-},
+ const day = String(d.getDate()).padStart(2,"0");
 
-{
-name:"Puten-Nudel-Pfanne",
-type:"Mittagessen",
-ingredients:[
-["Putenbrust",180],
-["Nudeln trocken",80],
-["Paprika",150],
-["Tomate",150],
-["Olivenöl",10]
-],
-instruction:
-"Nudeln trocken abwiegen und anschließend kochen. Pute anbraten. Gemüse hinzufügen und kurz mitbraten. Nudeln unterheben."
-},
+ return `${y}-${m}-${day}`;
 
-{
-name:"Lachs mit Kartoffeln",
-type:"Mittagessen",
-ingredients:[
-["Lachs",180],
-["Kartoffeln roh",300],
-["Brokkoli",200],
-["Olivenöl",5]
-],
-instruction:
-"Kartoffeln roh abwiegen, schneiden und kochen. Lachs im Ofen oder in der Pfanne garen. Brokkoli dünsten."
-},
-
-{
-name:"Thunfisch-Reis-Bowl",
-type:"Mittagessen",
-ingredients:[
-["Thunfisch",160],
-["Reis trocken",80],
-["Gurke",150],
-["Tomate",150],
-["Avocado",50]
-],
-instruction:
-"Reis trocken abwiegen und kochen. Gemüse schneiden. Thunfisch abtropfen lassen und alles in einer Bowl anrichten."
-},
-
-{
-name:"Skyr mit Banane",
-type:"Zwischenmahlzeit",
-ingredients:[
-["Skyr",250],
-["Banane",120],
-["Mandeln",15]
-],
-instruction:
-"Skyr in eine Schüssel geben. Banane schneiden und mit den Mandeln darüber verteilen."
-},
-
-{
-name:"Magerquark-Beeren-Creme",
-type:"Zwischenmahlzeit",
-ingredients:[
-["Magerquark",250],
-["Beeren",150],
-["Haferflocken",30]
-],
-instruction:
-"Magerquark cremig rühren und mit Beeren und Haferflocken vermischen."
-},
-
-{
-name:"Hüttenkäse mit Brot",
-type:"Zwischenmahlzeit",
-ingredients:[
-["Hüttenkäse",200],
-["Vollkornbrot",70],
-["Tomate",100]
-],
-instruction:
-"Hüttenkäse mit Tomatenscheiben auf dem Vollkornbrot servieren."
-},
-
-{
-name:"Hähnchen-Nudel-Pfanne",
-type:"Abendessen",
-ingredients:[
-["Hähnchenbrust",170],
-["Nudeln trocken",70],
-["Brokkoli",180],
-["Olivenöl",10]
-],
-instruction:
-"Nudeln trocken abwiegen und kochen. Hähnchen anbraten. Brokkoli dazugeben. Nudeln unterheben."
-},
-
-{
-name:"Puten-Reis-Gemüse-Pfanne",
-type:"Abendessen",
-ingredients:[
-["Putenbrust",170],
-["Reis trocken",70],
-["Paprika",150],
-["Brokkoli",150],
-["Olivenöl",10]
-],
-instruction:
-"Reis trocken abwiegen und kochen. Pute anbraten. Gemüse hinzufügen und bissfest garen. Alles vermengen."
-},
-
-{
-name:"Lachs-Gemüse-Teller",
-type:"Abendessen",
-ingredients:[
-["Lachs",160],
-["Kartoffeln roh",250],
-["Brokkoli",200]
-],
-instruction:
-"Kartoffeln roh abwiegen und kochen. Lachs im Ofen oder in der Pfanne garen. Brokkoli dünsten."
 }
 
-];
+
+function formatDate(key){
+
+ if(!key) return "";
+
+ const p = key.split("-");
+
+ return `${p[2]}.${p[1]}.${p[0]}`;
+
+}
 
 
-/* =====================================================
-   NÄHRWERTE PRO 100 g
-===================================================== */
+function getToday(){
 
-const nutrition={
-"Haferflocken":[370,13.5,59,7],
-"Magerquark":[67,12,4,0.2],
-"Banane":[89,1.1,23,0.3],
-"Mandeln":[579,21,22,50],
-"Ei":[143,13,1,10],
-"Vollkornbrot":[220,8,38,3],
-"Tomate":[18,0.9,3.9,0.2],
-"Avocado":[160,2,9,15],
-"Skyr":[63,11,4,0.2],
-"Beeren":[50,1,10,0.5],
-"Hähnchenbrust":[120,23,0,2],
-"Reis trocken":[360,7,80,0.7],
-"Brokkoli":[34,2.8,7,0.4],
-"Olivenöl":[884,0,0,100],
-"Putenbrust":[110,24,0,1],
-"Nudeln trocken":[350,12,70,1.5],
-"Paprika":[31,1,6,0.3],
-"Lachs":[208,20,0,13],
-"Kartoffeln roh":[77,2,17,0.1],
-"Thunfisch":[116,26,0,1],
-"Gurke":[15,0.7,3.6,0.1],
-"Hüttenkäse":[98,12,3,4]
-};
+ const key = todayKey();
+
+ if(!data.days[key]){
+
+  data.days[key] = {
+
+   foods:[],
+
+   exercises:[],
+
+   water:0
+
+  };
+
+  saveData();
+
+ }
+return data.days[key];
+
+}
 
 
 /* =====================================================
@@ -1023,36 +1260,68 @@ const nutrition={
 ===================================================== */
 
 function saveData(){
- localStorage.setItem("fitplanData",JSON.stringify(data));
+
+ localStorage.setItem(
+  "fitplanDataV2",
+  JSON.stringify(data)
+ );
+
 }
+
+
+/* =====================================================
+   LADEN
+===================================================== */
 
 function loadData(){
 
  try{
 
-  const saved=localStorage.getItem("fitplanData");
+  const saved =
+   localStorage.getItem("fitplanDataV2");
 
   if(saved){
 
-   const parsed=JSON.parse(saved);
+   const parsed =
+    JSON.parse(saved);
 
-   return{
+   return {
+
     ...defaultData,
+
     ...parsed,
+
     goals:{
      ...defaultData.goals,
-     ...(parsed.goals||{})
+     ...(parsed.goals || {})
     },
-    ownedFoods:Array.isArray(parsed.ownedFoods)
-     ? parsed.ownedFoods
-     : []
+
+    days:
+     parsed.days || {},
+
+    weights:
+     parsed.weights || [],
+
+    measurements:
+     parsed.measurements || [],
+
+    photos:
+     parsed.photos || []
+
    };
 
   }
 
- }catch(e){}
+ }catch(e){
 
- return JSON.parse(JSON.stringify(defaultData));
+  console.log(e);
+
+ }
+
+ return JSON.parse(
+  JSON.stringify(defaultData)
+ );
+
 }
 
 
@@ -1063,36 +1332,62 @@ function loadData(){
 function openPage(page){
 
  document.querySelectorAll(".page")
- .forEach(p=>p.classList.remove("active"));
+ .forEach(p =>
+  p.classList.remove("active")
+ );
 
- const target=document.getElementById(page);
+ const target =
+  document.getElementById(page);
 
- if(!target)return;
+ if(!target) return;
 
  target.classList.add("active");
 
- document.querySelectorAll("nav button")
- .forEach(b=>b.classList.remove("active"));
 
- const indexes={
+ document.querySelectorAll("nav button")
+ .forEach(b =>
+  b.classList.remove("active")
+ );
+
+
+ const pages = {
+
   home:0,
+
   nutrition:1,
+
   training:2,
-  progress:3
+
+  history:3,
+
+  progress:4
+
  };
 
- if(indexes[page]!==undefined){
+
+ if(pages[page] !== undefined){
+
   document.querySelectorAll("nav button")
-  [indexes[page]].classList.add("active");
+  [pages[page]]
+  .classList.add("active");
+
  }
+
 
  updateAll();
 
- if(page==="progress"){
-  setTimeout(drawChart,50);
+
+ if(page === "progress"){
+
+  setTimeout(drawChart,100);
+
+  renderPhotoHistory();
+
  }
 
+
  window.scrollTo(0,0);
+
 }
 
 
@@ -1102,26 +1397,61 @@ function openPage(page){
 
 function loadGoalInputs(){
 
- document.getElementById("goalCalories").value=data.goals.calories;
- document.getElementById("goalProtein").value=data.goals.protein;
- document.getElementById("goalCarbs").value=data.goals.carbs;
- document.getElementById("goalFat").value=data.goals.fat;
+ document.getElementById(
+  "goalCalories"
+ ).value =
+  data.goals.calories;
+
+ document.getElementById(
+  "goalProtein"
+ ).value =
+  data.goals.protein;
+
+ document.getElementById(
+  "goalCarbs"
+ ).value =
+  data.goals.carbs;
+
+ document.getElementById(
+  "goalFat"
+ ).value =
+  data.goals.fat;
 
 }
 
+
 function saveGoals(){
 
- data.goals={
-  calories:Number(document.getElementById("goalCalories").value)||2300,
-  protein:Number(document.getElementById("goalProtein").value)||130,
-  carbs:Number(document.getElementById("goalCarbs").value)||250,
-  fat:Number(document.getElementById("goalFat").value)||75
+ data.goals = {
+
+  calories:
+   Number(
+    document.getElementById("goalCalories").value
+   ) || 2300,
+
+  protein:
+   Number(
+    document.getElementById("goalProtein").value
+   ) || 130,
+
+  carbs:
+   Number(
+    document.getElementById("goalCarbs").value
+   ) || 250,
+
+  fat:
+   Number(
+    document.getElementById("goalFat").value
+   ) || 75
+
  };
 
  saveData();
 
- document.getElementById("goalMessage").textContent=
- "✓ Ziele gespeichert. Neue Tagespläne verwenden diese Werte.";
+ document.getElementById(
+  "goalMessage"
+ ).textContent =
+  "✓ Ziele gespeichert.";
 
  updateAll();
 
@@ -1132,20 +1462,231 @@ function saveGoals(){
    NÄHRWERTE
 ===================================================== */
 
+const nutrition = {
+
+ "Haferflocken":[370,13.5,59,7],
+
+ "Magerquark":[67,12,4,0.2],
+
+ "Banane":[89,1.1,23,0.3],
+
+ "Mandeln":[579,21,22,50],
+
+ "Ei":[143,13,1,10],
+
+ "Vollkornbrot":[220,8,38,3],
+
+ "Tomate":[18,0.9,3.9,0.2],
+
+ "Avocado":[160,2,9,15],
+
+ "Skyr":[63,11,4,0.2],
+
+ "Beeren":[50,1,10,0.5],
+
+ "Hähnchenbrust":[120,23,0,2],
+
+ "Reis trocken":[360,7,80,0.7],
+
+ "Brokkoli":[34,2.8,7,0.4],
+
+ "Olivenöl":[884,0,0,100],
+
+ "Putenbrust":[110,24,0,1],
+
+ "Nudeln trocken":[350,12,70,1.5],
+
+ "Paprika":[31,1,6,0.3],
+
+ "Lachs":[208,20,0,13],
+
+ "Kartoffeln roh":[77,2,17,0.1],
+
+ "Thunfisch":[116,26,0,1],
+
+ "Gurke":[15,0.7,3.6,0.1],
+
+ "Hüttenkäse":[98,12,3,4]
+
+};
+
+
 function ingredientNutrition(name,grams){
 
- const n=nutrition[name]||[0,0,0,0];
+ const n =
+  nutrition[name] || [0,0,0,0];
 
- const f=grams/100;
+ const f = grams / 100;
 
- return{
-  calories:n[0]*f,
-  protein:n[1]*f,
-  carbs:n[2]*f,
-  fat:n[3]*f
+ return {
+
+  calories:n[0] * f,
+
+  protein:n[1] * f,
+
+  carbs:n[2] * f,
+
+  fat:n[3] * f
+
  };
 
 }
+
+
+/* =====================================================
+   REZEPTE
+===================================================== */
+
+const recipes = [
+
+ {
+name:"Protein-Porridge mit Banane",
+  type:"Frühstück",
+  ingredients:[
+   ["Haferflocken",70],
+   ["Magerquark",200],
+   ["Banane",120],
+   ["Mandeln",10]
+  ],
+  instruction:
+   "Haferflocken erwärmen. Magerquark unterrühren. Banane schneiden und mit Mandeln darübergeben."
+ },
+
+ {
+  name:"Rührei mit Vollkornbrot",
+  type:"Frühstück",
+  ingredients:[
+   ["Ei",150],
+   ["Vollkornbrot",80],
+   ["Tomate",150],
+   ["Avocado",40]
+  ],
+  instruction:
+   "Eier verquirlen und in einer Pfanne stocken lassen. Mit Tomate, Brot und Avocado servieren."
+ },
+
+ {
+  name:"Skyr-Bowl mit Beeren",
+  type:"Frühstück",
+  ingredients:[
+   ["Skyr",250],
+   ["Haferflocken",50],
+   ["Beeren",150],
+   ["Mandeln",15]
+  ],
+  instruction:
+   "Alle Zutaten in eine Schüssel geben und vermischen."
+ },
+
+ {
+  name:"Hähnchen-Reis-Bowl",
+  type:"Mittagessen",
+  ingredients:[
+   ["Hähnchenbrust",180],
+   ["Reis trocken",80],
+   ["Brokkoli",200],
+   ["Olivenöl",10]
+  ],
+  instruction:
+   "Reis kochen. Hähnchen anbraten. Brokkoli dünsten und alles zusammen anrichten."
+ },
+
+ {
+  name:"Puten-Nudel-Pfanne",
+  type:"Mittagessen",
+  ingredients:[
+   ["Putenbrust",180],
+   ["Nudeln trocken",80],
+   ["Paprika",150],
+   ["Tomate",150],
+   ["Olivenöl",10]
+  ],
+  instruction:
+   "Nudeln kochen. Pute und Gemüse anbraten und anschließend mit den Nudeln vermischen."
+ },
+
+ {
+  name:"Lachs mit Kartoffeln",
+  type:"Mittagessen",
+  ingredients:[
+   ["Lachs",180],
+   ["Kartoffeln roh",300],
+   ["Brokkoli",200],
+   ["Olivenöl",5]
+  ],
+  instruction:
+   "Kartoffeln kochen. Lachs garen. Brokkoli dünsten."
+ },
+
+ {
+  name:"Skyr mit Banane",
+  type:"Zwischenmahlzeit",
+  ingredients:[
+   ["Skyr",250],
+   ["Banane",120],
+   ["Mandeln",15]
+  ],
+  instruction:
+   "Alle Zutaten zusammen in eine Schüssel geben."
+ },
+
+ {
+  name:"Magerquark-Beeren-Creme",
+  type:"Zwischenmahlzeit",
+  ingredients:[
+   ["Magerquark",250],
+   ["Beeren",150],
+   ["Haferflocken",30]
+  ],
+  instruction:
+   "Magerquark cremig rühren und mit Beeren und Haferflocken vermischen."
+ },
+
+ {
+  name:"Hähnchen-Nudel-Pfanne",
+  type:"Abendessen",
+  ingredients:[
+   ["Hähnchenbrust",170],
+   ["Nudeln trocken",70],
+   ["Brokkoli",180],
+   ["Olivenöl",10]
+  ],
+  instruction:
+   "Nudeln kochen. Hähnchen anbraten. Brokkoli hinzufügen und alles vermischen."
+ },
+
+ {
+  name:"Puten-Reis-Gemüse-Pfanne",
+  type:"Abendessen",
+  ingredients:[
+   ["Putenbrust",170],
+   ["Reis trocken",70],
+   ["Paprika",150],
+   ["Brokkoli",150],
+   ["Olivenöl",10]
+  ],
+  instruction:
+   "Reis kochen. Pute und Gemüse anbraten und anschließend vermischen."
+ },
+
+ {
+  name:"Lachs-Gemüse-Teller",
+  type:"Abendessen",
+  ingredients:[
+   ["Lachs",160],
+   ["Kartoffeln roh",250],
+   ["Brokkoli",200]
+  ],
+  instruction:
+   "Kartoffeln kochen. Lachs garen und mit Brokkoli servieren."
+ }
+
+];
+
+
+/* =====================================================
+   TAGESPLAN
+===================================================== */
 
 function recipeNutrition(recipe){
 
@@ -1156,24 +1697,22 @@ function recipeNutrition(recipe){
   fat:0
  };
 
- recipe.ingredients.forEach(item=>{
+ recipe.ingredients.forEach(i=>{
 
-  const n=ingredientNutrition(item[0],item[1]);
+  const n =
+   ingredientNutrition(i[0],i[1]);
 
-  total.calories+=n.calories;
-  total.protein+=n.protein;
-  total.carbs+=n.carbs;
-  total.fat+=n.fat;
+  total.calories += n.calories;
+  total.protein += n.protein;
+  total.carbs += n.carbs;
+  total.fat += n.fat;
 
  });
 
  return total;
+
 }
 
-
-/* =====================================================
-   TAGESPLAN
-===================================================== */
 
 function generateDayPlan(){
 
@@ -1187,44 +1726,63 @@ function generateDayPlan(){
  ];
 
  const shares=[
-  .25,
-  .15,
-  .35,
-  .25
+  .25,.15,.35,.25
  ];
 
- const plan=[];
+ data.dayPlan=[];
+
 
  types.forEach((type,index)=>{
-const candidates=recipes.filter(r=>r.type===type);
 
-  const position=
-   (data.planSeed+index*3)%candidates.length;
+  const candidates =
+   recipes.filter(r =>
+    r.type === type
+   );
 
-  const recipe=
-   JSON.parse(JSON.stringify(candidates[position]));
+  const recipe =
+   JSON.parse(
+    JSON.stringify(
+     candidates[
+      (data.planSeed + index) %
+      candidates.length
+     ]
+    )
+   );
 
-  const original=recipeNutrition(recipe);
 
-  const desiredCalories=
-   data.goals.calories*shares[index];
+  const original =
+   recipeNutrition(recipe);
 
-  let factor=
-   desiredCalories/Math.max(1,original.calories);
 
-  factor=Math.max(.5,Math.min(2.5,factor));
+  const desired =
+   data.goals.calories *
+shares[index];
 
-  recipe.ingredients=
-   recipe.ingredients.map(item=>[
-    item[0],
-    Math.max(1,Math.round(item[1]*factor))
+
+  let factor =
+   desired /
+   Math.max(1,original.calories);
+
+
+  factor =
+   Math.max(.5,
+   Math.min(2.5,factor));
+
+
+  recipe.ingredients =
+   recipe.ingredients.map(i=>[
+    i[0],
+    Math.max(
+     1,
+     Math.round(i[1]*factor)
+    )
    ]);
 
-  plan.push(recipe);
+
+  data.dayPlan.push(recipe);
 
  });
 
- data.dayPlan=plan;
 
  saveData();
 
@@ -1232,178 +1790,21 @@ const candidates=recipes.filter(r=>r.type===type);
 
 }
 
-
-/* =====================================================
-   PLAN AUS VORHANDENEN LEBENSMITTELN
-===================================================== */
-
-function addOwnedFoodRow(name="",grams=""){
-
- const box=document.getElementById("ownedFoods");
-
- const row=document.createElement("div");
-
- row.className="owned-food";
-
- row.innerHTML=`
- <input
-  class="owned-name"
-  placeholder="z.B. Hähnchen"
-  value="${escapeHtml(name)}">
-
- <input
-  class="owned-grams"
-  type="number"
-  placeholder="g"
-  value="${grams}">
-
- <button
-  class="red"
-  onclick="this.parentElement.remove()">
-  ×
- </button>
- `;
-
- box.appendChild(row);
-}
-
-
-function readOwnedFoods(){
-
- const rows=document.querySelectorAll(".owned-food");
-
- const result=[];
-
- rows.forEach(row=>{
-
-  const name=row.querySelector(".owned-name").value.trim();
-  const grams=Number(row.querySelector(".owned-grams").value)||0;
-
-  if(name&&grams>0){
-   result.push({
-    name,
-    grams
-   });
-  }
-
- });
-
- return result;
-}
-
-
-function generateFromOwnedFoods(){
-
- const owned=readOwnedFoods();
-
- if(!owned.length){
-
-  alert("Bitte zuerst deine vorhandenen Lebensmittel eingeben.");
-  return;
- }
-
- data.ownedFoods=owned;
- saveData();
-
- const found=[];
-
- owned.forEach(o=>{
-
-  const match=recipes.filter(r=>
-   r.ingredients.some(i=>
-    i[0].toLowerCase().includes(o.name.toLowerCase()) ||
-    o.name.toLowerCase().includes(i[0].toLowerCase())
-   )
-  );
-
-  if(match.length){
-   found.push(match);
-  }
-
- });
-
- if(!found.length){
-
-  alert(
-   "Ich konnte aus den eingegebenen Lebensmitteln noch kein passendes Rezept finden. Nutze zusätzlich die normalen Tagesplan-Vorschläge."
-  );
-
-  return;
- }
-
- const types=[
-  "Frühstück",
-  "Zwischenmahlzeit",
-  "Mittagessen",
-  "Abendessen"
- ];
-
- const plan=[];
-
- types.forEach((type,index)=>{
-
-  const possible=recipes.filter(r=>
-   r.type===type &&
-   r.ingredients.some(i=>
-    owned.some(o=>
-     i[0].toLowerCase().includes(o.name.toLowerCase()) ||
-     o.name.toLowerCase().includes(i[0].toLowerCase())
-    )
-   )
-  );
-
-  if(possible.length){
-
-   plan.push(
-    JSON.parse(
-     JSON.stringify(
-      possible[(data.planSeed+index)%possible.length]
-     )
-    )
-   );
-
-  }else{
-
-   const fallback=
-    recipes.filter(r=>r.type===type);
-
-   plan.push(
-    JSON.parse(
-     JSON.stringify(
-      fallback[(data.planSeed+index)%fallback.length]
-     )
-    )
-   );
-
-  }
-
- });
-
- data.planSeed++;
- data.dayPlan=plan;
-
- saveData();
-
- renderDayPlan();
-
-}
-
-
-/* =====================================================
-   PLAN DARSTELLEN
-===================================================== */
 
 function renderDayPlan(){
 
- const box=document.getElementById("dayPlan");
+ const box =
+  document.getElementById("dayPlan");
 
  if(!data.dayPlan.length){
 
-  box.innerHTML=
+  box.innerHTML =
    "<p class='empty'>Noch kein Tagesplan.</p>";
 
   return;
+
  }
+
 
  let total={
   calories:0,
@@ -1412,65 +1813,78 @@ function renderDayPlan(){
   fat:0
  };
 
+
  let html="";
+
 
  data.dayPlan.forEach((recipe,index)=>{
 
-  const n=recipeNutrition(recipe);
+  const n =
+   recipeNutrition(recipe);
 
-  total.calories+=n.calories;
-  total.protein+=n.protein;
-  total.carbs+=n.carbs;
-  total.fat+=n.fat;
 
-  html+=`
+  total.calories += n.calories;
+  total.protein += n.protein;
+  total.carbs += n.carbs;
+  total.fat += n.fat;
+
+
+  html += `
 
   <div class="recipe">
 
-   <span class="tag">${escapeHtml(recipe.type)}</span>
+  <span class="tag">
+  ${escapeHtml(recipe.type)}
+  </span>
 
-   <h3>${escapeHtml(recipe.name)}</h3>
+  <h3>
+  ${escapeHtml(recipe.name)}
+  </h3>
 
-   <div class="small">
-Alle Hauptzutaten werden als Rohgewicht angegeben.
-   </div>
-
-   <br>
-
-   ${recipe.ingredients.map(i=>`
+  ${recipe.ingredients.map(i=>`
 
    <div class="recipe-food">
 
-    <span>${escapeHtml(i[0])}</span>
+   <span>
+   ${escapeHtml(i[0])}
+   </span>
 
-    <strong>${i[1]} g</strong>
-
-   </div>
-
-   `).join("")}
-
-   <div class="recipe-total">
-
-    🔥 <b>${Math.round(n.calories)} kcal</b><br>
-    🥩 ${n.protein.toFixed(1)} g Protein<br>
-    🍚 ${n.carbs.toFixed(1)} g Kohlenhydrate<br>
-    🥑 ${n.fat.toFixed(1)} g Fett
+   <strong>
+   ${i[1]} g
+   </strong>
 
    </div>
 
-   <div class="instructions">
+  `).join("")}
 
-   <b>👨‍🍳 Zubereitung</b><br>
 
-   ${escapeHtml(recipe.instruction)}
+  <div class="recipe-total">
 
-   </div>
+  🔥 ${Math.round(n.calories)} kcal<br>
 
-   <br>
+  🥩 ${n.protein.toFixed(1)} g Protein<br>
 
-   <button onclick="acceptRecipe(${index})">
-   ✓ Dieses Gericht übernehmen
-   </button>
+  🍚 ${n.carbs.toFixed(1)} g KH<br>
+
+  🥑 ${n.fat.toFixed(1)} g Fett
+
+  </div>
+
+
+  <div class="instructions">
+
+  👨‍🍳
+  ${escapeHtml(recipe.instruction)}
+
+  </div>
+
+
+  <button onclick="acceptRecipe(${index})">
+
+  ✓ Gericht übernehmen
+
+  </button>
+
 
   </div>
 
@@ -1478,61 +1892,63 @@ Alle Hauptzutaten werden als Rohgewicht angegeben.
 
  });
 
- html+=`
+
+ html += `
 
  <div class="recipe-total">
 
- <b>📊 Tagesplan gesamt</b><br><br>
+ <b>📊 Tagesplan</b><br>
 
  🔥 ${Math.round(total.calories)}
  /
- ${data.goals.calories} kcal
-
- <br>
+ ${data.goals.calories} kcal<br>
 
  🥩 ${total.protein.toFixed(1)}
  /
- ${data.goals.protein} g Protein
-
- <br>
+ ${data.goals.protein} g<br>
 
  🍚 ${total.carbs.toFixed(1)}
  /
- ${data.goals.carbs} g KH
-
- <br>
+ ${data.goals.carbs} g<br>
 
  🥑 ${total.fat.toFixed(1)}
  /
- ${data.goals.fat} g Fett
+ ${data.goals.fat} g
 
  </div>
 
  `;
+
 
  box.innerHTML=html;
 
 }
 
 
-/* =====================================================
-   REZEPT ÜBERNEHMEN
-===================================================== */
-
 function acceptRecipe(index){
 
- const recipe=data.dayPlan[index];
+ const recipe =
+  data.dayPlan[index];
 
  if(!recipe)return;
 
- recipe.ingredients.forEach(item=>{
+ const day =
+  getToday();
 
-  const n=ingredientNutrition(item[0],item[1]);
 
-  data.foods.push({
+ recipe.ingredients.forEach(i=>{
 
-   name:item[0],
-   grams:item[1],
+  const n =
+   ingredientNutrition(
+    i[0],
+    i[1]
+   );
+
+
+  day.foods.push({
+
+   name:i[0],
+   grams:i[1],
    meal:recipe.type,
    calories:n.calories,
    protein:n.protein,
@@ -1543,37 +1959,47 @@ function acceptRecipe(index){
 
  });
 
+
  saveData();
+
  updateAll();
 
- alert("✓ "+recipe.name+" wurde übernommen.");
+ alert(
+  "✓ "+recipe.name+
+  " wurde für heute gespeichert."
+ );
 
 }
 
-
-/* =====================================================
-   GANZEN PLAN ÜBERNEHMEN
-===================================================== */
 
 function acceptWholePlan(){
 
  if(!data.dayPlan.length){
 
-  alert("Bitte zuerst einen Tagesplan erstellen.");
+  alert(
+   "Bitte zuerst einen Tagesplan erstellen."
+  );
+
   return;
 
  }
 
+
  data.dayPlan.forEach(recipe=>{
 
-  recipe.ingredients.forEach(item=>{
+  recipe.ingredients.forEach(i=>{
 
-   const n=ingredientNutrition(item[0],item[1]);
+   const n =
+    ingredientNutrition(
+     i[0],
+     i[1]
+    );
 
-   data.foods.push({
 
-    name:item[0],
-    grams:item[1],
+   getToday().foods.push({
+
+    name:i[0],
+    grams:i[1],
     meal:recipe.type,
     calories:n.calories,
     protein:n.protein,
@@ -1586,10 +2012,14 @@ function acceptWholePlan(){
 
  });
 
+
  saveData();
+
  updateAll();
 
- alert("✓ Der komplette Tagesplan wurde übernommen.");
+ alert(
+  "✓ Der komplette Tagesplan wurde heute gespeichert."
+ );
 
 }
 
@@ -1600,70 +2030,108 @@ function acceptWholePlan(){
 
 async function searchFoods(){
 
- const term=
-  document.getElementById("foodSearch").value.trim();
+ const term =
+  document.getElementById(
+   "foodSearch"
+  ).value.trim();
 
- const box=
-  document.getElementById("foodResults");
+
+ const box =
+  document.getElementById(
+   "foodResults"
+  );
+
 
  if(!term){
 
-  box.innerHTML=
+  box.innerHTML =
    "<p class='warning'>Bitte Lebensmittel eingeben.</p>";
 
   return;
+
  }
 
- box.innerHTML="<p>🔎 Suche...</p>";
+
+ box.innerHTML =
+  "<p>🔎 Suche...</p>";
+
 
  try{
 
-  const url=
-  "https://world.openfoodfacts.org/cgi/search.pl"+
-  "?search_terms="+encodeURIComponent(term)+
-  "&search_simple=1&action=process&json=1"+
-  "&page_size=8&lc=de";
+  const url =
+   "https://world.openfoodfacts.org/cgi/search.pl"+
+   "?search_terms="+
+   encodeURIComponent(term)+
+   "&search_simple=1"+
+   "&action=process"+
+   "&json=1"+
+   "&page_size=8"+
+   "&lc=de";
 
-  const response=await fetch(url);
 
-  const result=await response.json();
+  const response =
+   await fetch(url);
+
+
+  const result =
+   await response.json();
+
 
   box.innerHTML="";
 
+
   if(!result.products?.length){
 
-   box.innerHTML=
+   box.innerHTML =
     "<p class='empty'>Kein Produkt gefunden.</p>";
 
    return;
+
   }
+result.products.forEach(p=>{
 
-  result.products.forEach(p=>{
+   const n =
+    p.nutriments || {};
 
-   const n=p.nutriments||{};
 
-   const kcal=
-    Number(n["energy-kcal_100g"])||
-    (Number(n["energy_100g"])/4.184)||0;
+   const kcal =
+    Number(
+     n["energy-kcal_100g"]
+    ) ||
+    (
+     Number(n["energy_100g"]) /
+     4.184
+    ) ||
+    0;
 
-   const protein=
-    Number(n["proteins_100g"])||0;
 
-   const carbs=
-    Number(n["carbohydrates_100g"])||0;
+   const protein =
+    Number(n["proteins_100g"]) || 0;
 
-   const fat=
-    Number(n["fat_100g"])||0;
 
-   const div=document.createElement("div");
+   const carbs =
+    Number(n["carbohydrates_100g"]) || 0;
+
+
+   const fat =
+    Number(n["fat_100g"]) || 0;
+
+
+   const div =
+    document.createElement("div");
+
 
    div.className="product";
 
+
    div.innerHTML=`
 
-   <b>${escapeHtml(
-    p.product_name||"Unbekannt"
-   )}</b>
+   <b>
+   ${escapeHtml(
+    p.product_name ||
+    "Unbekannt"
+   )}
+   </b>
 
    <br>
 
@@ -1678,54 +2146,77 @@ async function searchFoods(){
 
    `;
 
+
    div.onclick=()=>{
-selectedFood={
-     name:p.product_name||"Lebensmittel",
+
+    selectedFood={
+
+     name:
+      p.product_name ||
+      "Lebensmittel",
+
      calories:kcal,
+
      protein,
+
      carbs,
+
      fat
+
     };
+
 
     document.getElementById(
      "selectedFoodCard"
     ).style.display="block";
 
+
     document.getElementById(
      "selectedFoodName"
-    ).innerHTML=
-     "<b>"+escapeHtml(selectedFood.name)+"</b>";
+    ).innerHTML =
+     "<b>"+
+     escapeHtml(
+      selectedFood.name
+     )+
+     "</b>";
+
 
     updateSelectedFood();
 
    };
 
+
    box.appendChild(div);
 
   });
 
+
  }catch(e){
 
-  box.innerHTML=
-   "<p class='warning'>Die Internetsuche konnte nicht geladen werden.</p>";
+  box.innerHTML =
+   "<p class='warning'>Internetsuche konnte nicht geladen werden.</p>";
 
  }
 
 }
 
 
-/* =====================================================
-   AUSGEWÄHLTES LEBENSMITTEL
-===================================================== */
-
 function updateSelectedFood(){
 
  if(!selectedFood)return;
 
- const grams=
-  Number(document.getElementById("foodGrams").value)||0;
 
- const f=grams/100;
+ const grams =
+  Number(
+   document.getElementById(
+    "foodGrams"
+   ).value
+  ) || 0;
+
+
+ const f =
+  grams / 100;
+
 
  document.getElementById(
   "foodNutrition"
@@ -1733,10 +2224,18 @@ function updateSelectedFood(){
 
  <div class="recipe-total">
 
- 🔥 ${Math.round(selectedFood.calories*f)} kcal ·
- 🥩 ${(selectedFood.protein*f).toFixed(1)} g Protein ·
- 🍚 ${(selectedFood.carbs*f).toFixed(1)} g KH ·
- 🥑 ${(selectedFood.fat*f).toFixed(1)} g Fett
+ 🔥 ${Math.round(
+  selectedFood.calories*f
+ )} kcal ·
+
+ 🥩 ${(selectedFood.protein*f)
+  .toFixed(1)} g Protein ·
+
+ 🍚 ${(selectedFood.carbs*f)
+  .toFixed(1)} g KH ·
+
+ 🥑 ${(selectedFood.fat*f)
+  .toFixed(1)} g Fett
 
  </div>
 
@@ -1745,45 +2244,77 @@ function updateSelectedFood(){
 }
 
 
-document.getElementById("foodGrams")
-.addEventListener("input",updateSelectedFood);
+document.getElementById(
+ "foodGrams"
+).addEventListener(
+ "input",
+ updateSelectedFood
+);
 
 
 function addSelectedFood(){
 
  if(!selectedFood)return;
 
- const grams=
-  Number(document.getElementById("foodGrams").value);
 
- if(!grams||grams<=0){
+ const grams =
+  Number(
+   document.getElementById(
+    "foodGrams"
+   ).value
+  );
 
-  alert("Bitte eine gültige Menge eingeben.");
+
+ if(!grams || grams<=0){
+
+  alert(
+   "Bitte eine gültige Menge eingeben."
+  );
+
   return;
 
  }
 
- const f=grams/100;
 
- data.foods.push({
+ const f =
+  grams/100;
+
+
+ getToday().foods.push({
 
   name:selectedFood.name,
-  grams,
-  meal:document.getElementById("foodMeal").value,
-  calories:selectedFood.calories*f,
-  protein:selectedFood.protein*f,
-  carbs:selectedFood.carbs*f,
-  fat:selectedFood.fat*f
+
+  grams:grams,
+
+  meal:
+   document.getElementById(
+    "foodMeal"
+   ).value,
+
+  calories:
+   selectedFood.calories*f,
+
+  protein:
+   selectedFood.protein*f,
+
+  carbs:
+   selectedFood.carbs*f,
+
+  fat:
+   selectedFood.fat*f
 
  });
+
 
  saveData();
 
  selectedFood=null;
 
+
  document.getElementById(
   "selectedFoodCard"
  ).style.display="none";
+
 
  updateAll();
 
@@ -1791,100 +2322,162 @@ function addSelectedFood(){
 
 
 /* =====================================================
-   BARCODE
+   BARCODE SCANNER
 ===================================================== */
 
 async function startScanner(){
 
- const status=
-  document.getElementById("scannerStatus");
+ const status =
+  document.getElementById(
+   "scannerStatus"
+  );
 
- if(!("BarcodeDetector" in window)){
 
-  status.innerHTML=
-   "⚠️ Dein Browser unterstützt den eingebauten Barcode-Scanner nicht. Bitte nutze die Lebensmittel-Suche oder einen Browser mit BarcodeDetector-Unterstützung.";
+ if(scannerRunning){
+
+  status.textContent =
+   "📷 Scanner läuft bereits.";
 
   return;
+
  }
+
+
+ if(typeof Html5Qrcode === "undefined"){
+
+  status.textContent =
+   "⚠️ Scanner wird noch geladen. Bitte erneut versuchen.";
+
+  return;
+
+ }
+
 
  try{
 
-  const detector=
-   new BarcodeDetector({
-    formats:[
-     "ean_13",
-     "ean_8",
-     "upc_a",
-     "upc_e"
+  html5QrCode =
+   new Html5Qrcode("reader");
+
+
+  scannerRunning=true;
+
+
+  status.textContent =
+   "📷 Kamera wird gestartet...";
+
+
+  await html5QrCode.start(
+
+   {
+    facingMode:"environment"
+   },
+
+
+   {
+
+    fps:10,
+
+    qrbox:{
+     width:250,
+     height:120
+    },
+
+    formatsToSupport:[
+
+     Html5QrcodeSupportedFormats.EAN_13,
+
+     Html5QrcodeSupportedFormats.EAN_8,
+
+     Html5QrcodeSupportedFormats.UPC_A,
+
+     Html5QrcodeSupportedFormats.UPC_E
+
     ]
-   });
 
-  const stream=
-   await navigator.mediaDevices.getUserMedia({
-    video:{
-     facingMode:{
-      ideal:"environment"
-     }
-    }
-   });
+   },
 
-  const video=document.createElement("video");
 
-  video.style.width="100%";
-  video.style.borderRadius="15px";
+   decodedText => {
 
-  document.querySelector(".scanner-box")
-  .appendChild(video);
+    status.textContent =
+     "✓ Barcode erkannt: "+
+     decodedText;
 
-  video.srcObject=stream;
 
-  await video.play();
+    document.getElementById(
+     "foodSearch"
+    ).value =
+     decodedText;
 
-  status.textContent=
-   "📷 Barcode vor die Kamera halten...";
 
-  const scan=async()=>{
+    stopScanner();
 
-   try{
 
-    const codes=
-     await detector.detect(video);
+    searchFoods();
 
-    if(codes.length){
+   },
 
-     const code=codes[0].rawValue;
 
-     stream.getTracks()
-     .forEach(track=>track.stop());
+   errorMessage => {
+// Normale Scanversuche werden ignoriert.
 
-     video.remove();
+   }
 
-     status.textContent=
-      "✓ Barcode erkannt: "+code;
+  );
 
-     document.getElementById(
-      "foodSearch"
-     ).value=code;
 
-     searchFoods();
+  status.textContent =
+   "📷 Barcode vor die Kamera halten.";
 
-     return;
-    }
+ }catch(error){
 
-   }catch(e){}
+  console.error(error);
 
-   requestAnimationFrame(scan);
+  scannerRunning=false;
 
-  };
+  status.textContent =
+   "⚠️ Kamera konnte nicht gestartet werden. Bitte Kamerazugriff erlauben.";
 
-  scan();
+ }
+
+}
+
+
+async function stopScanner(){
+
+ if(!html5QrCode){
+
+  return;
+
+ }
+
+
+ try{
+
+  if(scannerRunning){
+
+   await html5QrCode.stop();
+
+  }
+
+  html5QrCode.clear();
 
  }catch(e){
 
-  status.textContent=
-   "⚠️ Kamerazugriff wurde nicht erlaubt.";
+  console.log(e);
 
  }
+
+
+ html5QrCode=null;
+
+ scannerRunning=false;
+
+
+ document.getElementById(
+  "scannerStatus"
+ ).textContent =
+  "Scanner gestoppt.";
 
 }
 
@@ -1895,18 +2488,21 @@ async function startScanner(){
 
 function addWater(amount){
 
- data.water+=amount;
+ getToday().water += amount;
 
  saveData();
+
  updateAll();
 
 }
 
+
 function resetWater(){
 
- data.water=0;
+ getToday().water=0;
 
  saveData();
+
  updateAll();
 
 }
@@ -1915,11 +2511,16 @@ function resetWater(){
 /* =====================================================
    LEBENSMITTEL LÖSCHEN
 ===================================================== */
+
 function deleteFood(index){
 
- data.foods.splice(index,1);
+ getToday().foods.splice(
+  index,
+  1
+ );
 
  saveData();
+
  updateAll();
 
 }
@@ -1931,41 +2532,58 @@ function deleteFood(index){
 
 function addExercise(){
 
- const name=
-  document.getElementById("exerciseName")
-  .value.trim();
+ const name =
+  document.getElementById(
+   "exerciseName"
+  ).value.trim();
+
 
  if(!name){
 
-  alert("Bitte Übung eingeben.");
+  alert(
+   "Bitte Übung eingeben."
+  );
+
   return;
 
  }
 
- data.exercises.push({
 
-  name,
+ getToday().exercises.push({
 
-  sets:Number(
-   document.getElementById("exerciseSets").value
-  )||0,
+  name:name,
 
-  reps:Number(
-   document.getElementById("exerciseReps").value
-  )||0,
+  sets:
+   Number(
+    document.getElementById(
+     "exerciseSets"
+    ).value
+   ) || 0,
 
-  weight:Number(
-   document.getElementById("exerciseWeight").value
-  )||0
+  reps:
+   Number(
+    document.getElementById(
+     "exerciseReps"
+    ).value
+   ) || 0,
+
+  weight:
+   Number(
+    document.getElementById(
+     "exerciseWeight"
+    ).value
+   ) || 0
 
  });
 
- document.getElementById("exerciseName").value="";
- document.getElementById("exerciseSets").value=3;
- document.getElementById("exerciseReps").value=10;
- document.getElementById("exerciseWeight").value=0;
+
+ document.getElementById(
+  "exerciseName"
+ ).value="";
+
 
  saveData();
+
  updateAll();
 
 }
@@ -1973,67 +2591,14 @@ function addExercise(){
 
 function deleteExercise(index){
 
- data.exercises.splice(index,1);
+ getToday().exercises.splice(
+  index,
+  1
+ );
 
  saveData();
+
  updateAll();
-
-}
-
-
-function renderExercises(){
-
- const box=
-  document.getElementById("exerciseList");
-
- const home=
-  document.getElementById("homeTraining");
-
- if(!data.exercises.length){
-
-  box.innerHTML=
-   "<p class='empty'>Noch kein Training eingetragen.</p>";
-
-  home.innerHTML=
-   "Noch kein Training.";
-
-  return;
- }
-
- box.innerHTML=
- data.exercises.map((e,i)=>`
-
- <div class="item">
-
- <b>${escapeHtml(e.name)}</b>
-
- <br>
-
- <span class="small">
-
- ${e.sets} Sätze ×
- ${e.reps} Wdh. ·
- ${e.weight} kg
-
- </span>
-
- <br>
-
- <button
- class="red"
- onclick="deleteExercise(${i})">
-
- Löschen
-
- </button>
-
- </div>
-
- `).join("");
-
- home.innerHTML=
- data.exercises.length+
- " Übungen eingetragen.";
 
 }
 
@@ -2044,29 +2609,40 @@ function renderExercises(){
 
 function saveWeight(){
 
- const value=
-  Number(document.getElementById("weightInput").value);
+ const value =
+  Number(
+   document.getElementById(
+    "weightInput"
+   ).value
+  );
+
 
  if(!value){
 
-  alert("Bitte Gewicht eingeben.");
+  alert(
+   "Bitte Gewicht eingeben."
+  );
+
   return;
 
  }
 
- const today=
-  new Date().toLocaleDateString("de-DE");
 
  data.weights.push({
-  date:today,
-  value
+
+  date:todayKey(),
+
+  value:value
+
  });
+
 
  saveData();
 
  document.getElementById(
   "weightInput"
  ).value="";
+
 
  updateAll();
 
@@ -2083,43 +2659,63 @@ function saveMeasurements(){
 
  const values={
 
-  chest:Number(
-   document.getElementById("measureChest").value
-  )||null,
+  chest:
+   Number(
+    document.getElementById(
+     "measureChest"
+    ).value
+   ) || null,
 
-  waist:Number(
-   document.getElementById("measureWaist").value
-  )||null,
+  waist:
+   Number(
+    document.getElementById(
+     "measureWaist"
+    ).value
+   ) || null,
 
-  hip:Number(
-   document.getElementById("measureHip").value
-  )||null,
+  hip:
+   Number(
+    document.getElementById(
+     "measureHip"
+    ).value
+   ) || null,
 
-  thigh:Number(
-   document.getElementById("measureThigh").value
-  )||null,
+  thigh:
+   Number(
+    document.getElementById(
+     "measureThigh"
+    ).value
+   ) || null,
 
-  arm:Number(
-   document.getElementById("measureArm").value
-  )||null
+  arm:
+   Number(
+    document.getElementById(
+     "measureArm"
+    ).value
+   ) || null
 
  };
 
+
  if(!Object.values(values).some(Boolean)){
 
-  alert("Bitte mindestens ein Maß eingeben.");
+  alert(
+   "Bitte mindestens ein Maß eingeben."
+  );
+
   return;
 
  }
 
+
  data.measurements.push({
 
-  date:new Date()
-   .toLocaleDateString("de-DE"),
+  date:todayKey(),
 
   ...values
 
  });
+
 
  saveData();
 
@@ -2127,98 +2723,948 @@ function saveMeasurements(){
   "#measureChest,#measureWaist,#measureHip,#measureThigh,#measureArm"
  ).forEach(i=>i.value="");
 
+
  updateAll();
 
 }
 
 
 /* =====================================================
-   VERLAUF
+   FORTSCHRITTSBILDER
 ===================================================== */
 
-function renderHistory(){
+function saveProgressPhoto(type,input){
 
- const table=
-  document.getElementById("historyTable");
+ const file =
+  input.files &&
+  input.files[0];
 
- const count=Math.max(
-  data.weights.length,
-  data.measurements.length
- );
 
- if(!count){
+ if(!file)return;
 
-  table.innerHTML=
-   "<tr><td colspan='7'>Noch keine Daten.</td></tr>";
 
-  return;
- }
+ const reader =
+  new FileReader();
 
- let rows=[];
 
- for(let i=0;i<count;i++){
+ reader.onload = function(e){
+const photo={
 
-  const w=data.weights[i]||{};
-  const m=data.measurements[i]||{};
+   id:
+    Date.now()+"-"+type,
 
-  rows.push(`
+   date:
+    todayKey(),
 
-  <tr>
+   type:type,
 
-  <td>${m.date||w.date||""}</td>
+   data:e.target.result
 
-  <td>${w.value||"-"}</td>
-  <td>${m.chest||"-"}</td>
-  <td>${m.waist||"-"}</td>
-  <td>${m.hip||"-"}</td>
-  <td>${m.thigh||"-"}</td>
-  <td>${m.arm||"-"}</td>
+  };
 
-  </tr>
-`);
 
- }
+  data.photos.push(photo);
 
- table.innerHTML=
-  rows.reverse().join("");
+
+  saveData();
+
+  showCurrentPhoto(
+   type,
+   e.target.result
+  );
+
+
+  renderPhotoHistory();
+
+ };
+
+
+ reader.readAsDataURL(file);
+
+}
+
+
+function showCurrentPhoto(type,src){
+
+ const ids={
+
+  front:"photoFrontPreview",
+
+  side:"photoSidePreview",
+
+  back:"photoBackPreview"
+
+ };
+
+
+ const img =
+  document.getElementById(
+   ids[type]
+  );
+
+
+ if(!img)return;
+
+
+ img.src=src;
+
+ img.style.display="block";
 
 }
 
 
 /* =====================================================
-   GEWICHTSKURVE
+   FORTSCHRITTSBILDER VERLAUF
+===================================================== */
+
+function renderPhotoHistory(){
+
+ const box =
+  document.getElementById(
+   "photoHistory"
+  );
+
+
+ if(!box)return;
+
+
+ if(!data.photos.length){
+
+  box.innerHTML =
+   "<p class='empty'>Noch keine Fortschrittsbilder.</p>";
+
+  return;
+
+ }
+
+
+ const dates =
+  [...new Set(
+   data.photos.map(p=>p.date)
+  )].sort().reverse();
+
+
+ let html="";
+
+
+ dates.forEach(date=>{
+
+  const photos =
+   data.photos.filter(
+    p=>p.date===date
+   );
+
+
+  html += `
+
+  <div class="history-day">
+
+  <b>
+  ${formatDate(date)}
+  </b>
+
+  <div class="photo-grid"
+       style="margin-top:10px;">
+
+  `;
+
+
+  ["front","side","back"]
+  .forEach(type=>{
+
+   const p =
+    photos.find(
+     x=>x.type===type
+    );
+
+
+   const label={
+
+    front:"Vorne",
+
+    side:"Seite",
+
+    back:"Hinten"
+
+   }[type];
+
+
+   html += `
+
+   <div class="photo-box">
+
+   <div class="photo-label">
+   ${label}
+   </div>
+
+   ${
+    p
+    ?
+    `<img src="${p.data}">`
+    :
+    `<span class="small">Kein Bild</span>`
+   }
+
+   </div>
+
+   `;
+
+  });
+
+
+  html += `
+
+  </div>
+
+  </div>
+
+  `;
+
+ });
+
+
+ box.innerHTML=html;
+
+}
+
+
+/* =====================================================
+   TAGESWERTE
+===================================================== */
+
+function calculateDay(day){
+
+ const total={
+
+  calories:0,
+
+  protein:0,
+
+  carbs:0,
+
+  fat:0
+
+ };
+
+
+ (day.foods || [])
+ .forEach(f=>{
+
+  total.calories +=
+   Number(f.calories) || 0;
+
+  total.protein +=
+   Number(f.protein) || 0;
+
+  total.carbs +=
+   Number(f.carbs) || 0;
+
+  total.fat +=
+   Number(f.fat) || 0;
+
+ });
+
+
+ return total;
+
+}
+
+
+/* =====================================================
+   AKTUALISIERUNG
+===================================================== */
+
+function updateAll(){
+
+ const day =
+  getToday();
+
+
+ const totals =
+  calculateDay(day);
+
+
+ document.getElementById(
+  "todayCalories"
+ ).textContent =
+  Math.round(
+   totals.calories
+  );
+
+
+ document.getElementById(
+  "todayProtein"
+ ).textContent =
+  Math.round(
+   totals.protein
+  );
+
+
+ document.getElementById(
+  "todayCarbs"
+ ).textContent =
+  Math.round(
+   totals.carbs
+  );
+
+
+ document.getElementById(
+  "todayFat"
+ ).textContent =
+  Math.round(
+   totals.fat
+  );
+
+
+ document.getElementById(
+  "todayWater"
+ ).textContent =
+  day.water;
+
+
+ document.getElementById(
+  "waterValue"
+ ).textContent =
+  day.water;
+
+
+ document.getElementById(
+  "goalCalHome"
+ ).textContent =
+  data.goals.calories;
+
+
+ document.getElementById(
+  "goalProteinHome"
+ ).textContent =
+  data.goals.protein;
+
+
+ document.getElementById(
+  "goalCarbsHome"
+ ).textContent =
+  data.goals.carbs;
+
+
+ document.getElementById(
+  "goalFatHome"
+ ).textContent =
+  data.goals.fat;
+
+
+ const percentage =
+  Math.min(
+   100,
+   totals.calories /
+   Math.max(
+    1,
+    data.goals.calories
+   ) *
+   100
+  );
+
+
+ document.getElementById(
+  "calorieProgress"
+ ).style.width =
+  percentage+"%";
+
+
+ renderFoods();
+
+ renderExercises();
+
+ renderHistory();
+
+ renderWeekSummary();
+
+ updateTodaySummary();
+
+
+ const latest =
+  data.weights[
+   data.weights.length-1
+  ];
+
+
+ document.getElementById(
+  "currentWeight"
+ ).textContent =
+  latest
+  ? latest.value
+  : "-";
+}
+
+
+function updateTodaySummary(){
+
+ const day =
+  getToday();
+
+
+ const totals =
+  calculateDay(day);
+
+
+ document.getElementById(
+  "todaySummary"
+ ).innerHTML = `
+
+ <b>
+ ${formatDate(todayKey())}
+ </b>
+
+ <br><br>
+
+ 🍽️ ${day.foods.length} Lebensmittel
+
+ <br>
+
+ 🏋️ ${day.exercises.length} Übungen
+
+ <br>
+
+ 💧 ${day.water} ml Wasser
+
+ <br>
+
+ 🔥 ${Math.round(totals.calories)} kcal
+
+ `;
+
+}
+
+
+/* =====================================================
+   LEBENSMITTEL DARSTELLEN
+===================================================== */
+
+function renderFoods(){
+
+ const day =
+  getToday();
+
+
+ const box =
+  document.getElementById(
+   "foodList"
+  );
+
+
+ const home =
+  document.getElementById(
+   "homeFoods"
+  );
+
+
+ if(!day.foods.length){
+
+  const empty =
+   "<p class='empty'>Noch nichts eingetragen.</p>";
+
+  box.innerHTML=empty;
+
+  home.innerHTML=empty;
+
+  return;
+
+ }
+
+
+ const html =
+  day.foods.map((f,i)=>`
+
+  <div class="item">
+
+  <b>
+  ${escapeHtml(f.name)}
+  </b>
+
+  <br>
+
+  <span class="small">
+
+  ${f.grams} g ·
+  ${escapeHtml(f.meal)}
+
+  <br>
+
+  ${Math.round(f.calories)} kcal ·
+  ${f.protein.toFixed(1)} g Protein ·
+  ${f.carbs.toFixed(1)} g KH ·
+  ${f.fat.toFixed(1)} g Fett
+
+  </span>
+
+  <br>
+
+  <button class="red"
+          onclick="deleteFood(${i})">
+
+  Löschen
+
+  </button>
+
+  </div>
+
+  `).join("");
+
+
+ box.innerHTML=html;
+
+ home.innerHTML=html;
+
+}
+
+
+/* =====================================================
+   TRAINING DARSTELLEN
+===================================================== */
+
+function renderExercises(){
+
+ const day =
+  getToday();
+
+
+ const box =
+  document.getElementById(
+   "exerciseList"
+  );
+
+
+ const home =
+  document.getElementById(
+   "homeTraining"
+  );
+
+
+ if(!day.exercises.length){
+
+  box.innerHTML =
+   "<p class='empty'>Noch kein Training eingetragen.</p>";
+
+  home.innerHTML =
+   "Noch kein Training.";
+
+  return;
+
+ }
+
+
+ box.innerHTML =
+  day.exercises.map((e,i)=>`
+
+  <div class="item">
+
+  <b>
+  ${escapeHtml(e.name)}
+  </b>
+
+  <br>
+
+  <span class="small">
+
+  ${e.sets} Sätze ×
+  ${e.reps} Wdh. ·
+  ${e.weight} kg
+
+  </span>
+
+  <br>
+
+  <button class="red"
+          onclick="deleteExercise(${i})">
+
+  Löschen
+
+  </button>
+
+  </div>
+
+  `).join("");
+
+
+ home.innerHTML =
+  day.exercises.length+
+  " Übungen eingetragen.";
+
+}
+
+
+/* =====================================================
+   WOCHENVERLAUF
+===================================================== */
+
+function getWeekDates(){
+
+ const result=[];
+
+ const now =
+  new Date();
+
+ const day =
+  now.getDay() || 7;
+
+ const monday =
+  new Date(now);
+
+ monday.setDate(
+  now.getDate() -
+  day +
+  1
+ );
+
+
+ for(let i=0;i<7;i++){
+
+  const d =
+   new Date(monday);
+
+  d.setDate(
+   monday.getDate()+i
+  );
+
+
+  const key =
+   d.getFullYear()+"-"+
+   String(
+    d.getMonth()+1
+   ).padStart(2,"0")+"-"+
+   String(
+    d.getDate()
+   ).padStart(2,"0");
+
+
+  result.push(key);
+
+ }
+
+
+ return result;
+
+}
+
+
+function renderWeekSummary(){
+
+ const box =
+  document.getElementById(
+   "weekSummary"
+  );
+
+
+ if(!box)return;
+
+
+ const dates =
+  getWeekDates();
+
+
+ let calories=0;
+
+ let protein=0;
+
+ let training=0;
+
+ let water=0;
+
+ let activeDays=0;
+
+
+ dates.forEach(date=>{
+
+  const day =
+   data.days[date];
+
+
+  if(!day)return;
+
+
+  activeDays++;
+
+
+  const totals =
+   calculateDay(day);
+
+
+  calories +=
+   totals.calories;
+
+
+  protein +=
+   totals.protein;
+
+
+  training +=
+   day.exercises.length;
+
+
+  water +=
+   day.water;
+
+ });
+
+
+ const days =
+  Math.max(
+   1,
+   activeDays
+  );
+
+
+ box.innerHTML = `
+
+ <b>Diese Woche</b>
+
+ <br><br>
+
+ 📅 Aktive Tage:
+ ${activeDays}
+
+ <br>
+
+ 🔥 Ø Kalorien:
+ ${Math.round(calories/days)} kcal
+
+ <br>
+
+ 🥩 Ø Protein:
+ ${Math.round(protein/days)} g
+
+ <br>
+
+ 🏋️ Training:
+ ${training} Übungen
+
+ <br>
+
+ 💧 Ø Wasser:
+ ${Math.round(water/days)} ml
+
+ `;
+
+}
+/* =====================================================
+   GESAMTER VERLAUF
+===================================================== */
+
+function renderHistory(){
+
+ const box =
+  document.getElementById(
+   "historyList"
+  );
+
+
+ if(!box)return;
+
+
+ const dates =
+  Object.keys(data.days)
+  .sort()
+  .reverse();
+
+
+ if(!dates.length){
+
+  box.innerHTML =
+   "<p class='empty'>Noch keine vergangenen Tage.</p>";
+
+  return;
+
+ }
+
+
+ let html="";
+
+
+ dates.forEach(date=>{
+
+  const day =
+   data.days[date];
+
+
+  const totals =
+   calculateDay(day);
+
+
+  html += `
+
+  <div class="history-day">
+
+  <div class="history-header">
+
+  <b>
+  📅 ${formatDate(date)}
+  </b>
+
+  <span class="tag">
+  ${Math.round(totals.calories)} kcal
+  </span>
+
+  </div>
+
+  <br>
+
+  🥩 ${Math.round(totals.protein)} g Protein
+
+  <br>
+
+  🍚 ${Math.round(totals.carbs)} g KH
+
+  <br>
+
+  🥑 ${Math.round(totals.fat)} g Fett
+
+  <br>
+
+  💧 ${day.water} ml Wasser
+
+  <br>
+
+  🍽️ ${day.foods.length} Lebensmittel
+
+  <br>
+
+  🏋️ ${day.exercises.length} Übungen
+
+  `;
+
+
+  if(day.foods.length){
+
+   html += `
+
+   <hr>
+
+   <b>🍽️ Essen</b>
+
+   `;
+
+
+   day.foods.forEach(f=>{
+
+    html += `
+
+    <div class="item">
+
+    ${escapeHtml(f.name)}
+    –
+    ${f.grams} g
+    –
+    ${Math.round(f.calories)} kcal
+
+    </div>
+
+    `;
+
+   });
+
+  }
+
+
+  if(day.exercises.length){
+
+   html += `
+
+   <hr>
+
+   <b>🏋️ Training</b>
+
+   `;
+
+
+   day.exercises.forEach(e=>{
+
+    html += `
+
+    <div class="item">
+
+    ${escapeHtml(e.name)}
+    –
+    ${e.sets} ×
+    ${e.reps}
+    –
+    ${e.weight} kg
+
+    </div>
+
+    `;
+
+   });
+
+  }
+
+
+  html += `
+
+  </div>
+
+  `;
+
+ });
+
+
+ box.innerHTML=html;
+
+}
+
+
+/* =====================================================
+   GEWICHTSVERLAUF
 ===================================================== */
 
 function drawChart(){
 
- const canvas=
-  document.getElementById("weightChart");
+ const canvas =
+  document.getElementById(
+   "weightChart"
+  );
+
 
  if(!canvas)return;
 
- const ctx=
+
+ const ctx =
   canvas.getContext("2d");
 
- const width=
-  canvas.clientWidth||600;
+
+ const width =
+  canvas.clientWidth ||
+  600;
+
 
  const height=240;
 
+
  canvas.width=width;
+
  canvas.height=height;
 
- ctx.clearRect(0,0,width,height);
 
- const values=
-  data.weights.map(w=>Number(w.value));
+ ctx.clearRect(
+  0,
+  0,
+  width,
+  height
+ );
+
+
+ const values =
+  data.weights.map(
+   w=>Number(w.value)
+  );
+
 
  if(!values.length){
 
   ctx.fillStyle="#68736e";
+
   ctx.font="14px Arial";
 
   ctx.fillText(
-   "Noch keine Gewichtsdaten vorhanden.",
+   "Noch keine Gewichtsdaten.",
    20,
    40
   );
@@ -2227,70 +3673,115 @@ function drawChart(){
 
  }
 
- const min=
+
+ const min =
   Math.min(...values)-1;
 
- const max=
+
+ const max =
   Math.max(...values)+1;
 
+
  ctx.strokeStyle="#d8e2dd";
- ctx.lineWidth=1;
 
  ctx.beginPath();
 
  ctx.moveTo(40,20);
- ctx.lineTo(40,height-30);
- ctx.lineTo(width-15,height-30);
+
+ ctx.lineTo(
+  40,
+  height-30
+ );
+
+ ctx.lineTo(
+  width-15,
+  height-30
+ );
 
  ctx.stroke();
 
+
  ctx.strokeStyle="#39b87f";
+
  ctx.lineWidth=3;
 
  ctx.beginPath();
 
+
  values.forEach((value,i)=>{
 
-  const x=
-   45+
-   i*((width-65)/
-   Math.max(1,values.length-1));
+  const x =
+   45 +
+   i *
+   (
+    (width-65) /
+    Math.max(
+     1,
+     values.length-1
+    )
+   );
 
-  const y=
-   20+
-   ((max-value)/(max-min))*
+
+  const y =
+   20 +
+   (
+    (max-value) /
+    (max-min)
+   ) *
    (height-55);
 
-  if(i===0)
+
+  if(i===0){
+
    ctx.moveTo(x,y);
-  else
+
+  }else{
+
    ctx.lineTo(x,y);
+
+  }
 
  });
 
+
  ctx.stroke();
+
 
  values.forEach((value,i)=>{
 
-  const x=
-   45+
-   i*((width-65)/
-   Math.max(1,values.length-1));
+  const x =
+   45 +
+   i *
+   (
+    (width-65) /
+    Math.max(
+     1,
+     values.length-1
+    )
+   );
 
-  const y=
-   20+
-   ((max-value)/(max-min))*
+
+  const y =
+   20 +
+   (
+    (max-value) /
+    (max-min)
+   ) *
    (height-55);
+
 
   ctx.fillStyle="#163b32";
 
   ctx.beginPath();
 
   ctx.arc(
-   x,y,5,0,Math.PI*2
+   x,y,5,
+   0,
+   Math.PI*2
   );
 
   ctx.fill();
+
 
   ctx.font="12px Arial";
 
@@ -2306,201 +3797,32 @@ function drawChart(){
 
 
 /* =====================================================
-   AKTUALISIERUNG
-===================================================== */
-
-function updateAll(){
-
- const totals={
-  calories:0,
-  protein:0,
-  carbs:0,
-  fat:0
- };
-
- data.foods.forEach(f=>{
-
-  totals.calories+=Number(f.calories)||0;
-  totals.protein+=Number(f.protein)||0;
-  totals.carbs+=Number(f.carbs)||0;
-  totals.fat+=Number(f.fat)||0;
-
- });
-
- document.getElementById(
-  "todayCalories"
- ).textContent=
-  Math.round(totals.calories);
-
- document.getElementById(
-  "todayProtein"
- ).textContent=
-  Math.round(totals.protein);
-
- document.getElementById(
-  "todayCarbs"
- ).textContent=
-  Math.round(totals.carbs);
-
- document.getElementById(
-  "todayFat"
- ).textContent=
-  Math.round(totals.fat);
-
- document.getElementById(
-  "todayWater"
- ).textContent=
-  data.water;
-
- document.getElementById(
-  "waterValue"
- ).textContent=
-  data.water;
-
- document.getElementById(
-  "goalCalHome"
- ).textContent=
-  data.goals.calories;
-
- document.getElementById(
-  "goalProteinHome"
- ).textContent=
-  data.goals.protein;
-
- document.getElementById(
-  "goalCarbsHome"
- ).textContent=
-  data.goals.carbs;
-
- document.getElementById(
-  "goalFatHome"
- ).textContent=
-  data.goals.fat;
-
- const percentage=
-  Math.min(
-   100,
-   totals.calories/
-   Math.max(1,data.goals.calories)*100
-  );
-
- document.getElementById(
-  "calorieProgress"
- ).style.width=
-  percentage+"%";
-
- document.getElementById(
-  "currentWeight"
- ).textContent=
-  data.weights.length
-  ? data.weights[data.weights.length-1].value
-  : "-";
-
- renderFoods();
- renderExercises();
- renderHistory();
- renderDayPlan();
-
-}
-
-
-/* =====================================================
-   LEBENSMITTELLISTE
-===================================================== */
-
-function renderFoods(){
-
- const boxes=[
-  document.getElementById("foodList"),
-  document.getElementById("homeFoods")
- ];
-
- if(!data.foods.length){
-
-  boxes.forEach(b=>{
-   b.innerHTML=
-    "<p class='empty'>Noch nichts eingetragen.</p>";
-  });
-
-  return;
-
- }
-
- const html=
-  data.foods.map((f,i)=>`
-
- <div class="item">
-
- <b>${escapeHtml(f.name)}</b>
-
- <br>
-
- <span class="small">
-
- ${f.grams} g ·
- ${escapeHtml(f.meal)}
-
- <br>
-${Math.round(f.calories)} kcal ·
- ${f.protein.toFixed(1)} g Protein ·
- ${f.carbs.toFixed(1)} g KH ·
- ${f.fat.toFixed(1)} g Fett
-
- </span>
-
- <br>
-
- <button
- class="red"
- onclick="deleteFood(${i})">
-
- Löschen
-
- </button>
-
- </div>
-
- `).join("");
-
- boxes.forEach(b=>b.innerHTML=html);
-
-}
-
-
-/* =====================================================
    SICHERES HTML
 ===================================================== */
 
 function escapeHtml(text){
 
  return String(text)
- .replace(/&/g,"&amp;")
- .replace(/</g,"&lt;")
- .replace(/>/g,"&gt;")
- .replace(/"/g,"&quot;")
- .replace(/'/g,"&#039;");
 
-}
+  .replace(/&/g,"&amp;")
 
-
-/* =====================================================
-   PWA SERVICE WORKER
-===================================================== */
-
+  .replace(/</g,"&lt;")
 if("serviceWorker" in navigator){
 
- window.addEventListener("load",()=>{
+ window.addEventListener(
+  "load",
+  ()=>{
 
-  navigator.serviceWorker
-   .register("service-worker.js")
-   .catch(err=>{
-    console.log(
-     "Service Worker konnte nicht registriert werden",
-     err
-    );
-   });
+   navigator.serviceWorker
+   .register(
+    "service-worker.js"
+   )
+   .catch(
+    e=>console.log(e)
+   );
 
- });
+  }
+ );
 
 }
 
@@ -2511,15 +3833,11 @@ if("serviceWorker" in navigator){
 
 loadGoalInputs();
 
-if(data.ownedFoods?.length){
-
- data.ownedFoods.forEach(f=>
-  addOwnedFoodRow(f.name,f.grams)
- );
-
-}
+getToday();
 
 updateAll();
+
+renderPhotoHistory();
 
 </script>
 
