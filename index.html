@@ -9,7 +9,6 @@
 
 <title>FitPlan 💪</title>
 
-<!-- Barcode Scanner für iPhone -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
@@ -225,7 +224,7 @@ button:active{transform:scale(.98)}
 }
 
 table{
-width:100%;
+ width:100%;
  border-collapse:collapse;
  font-size:13px;
 }
@@ -243,7 +242,7 @@ nav{
  right:0;
  height:72px;
  background:white;
- border-top:1px solid #ddd;
+border-top:1px solid #ddd;
  display:flex;
  justify-content:center;
  z-index:100;
@@ -381,11 +380,54 @@ nav button.active{
  margin-right:4px;
 }
 
+.connection-status{
+ display:flex;
+ align-items:center;
+ gap:8px;
+ padding:10px 12px;
+ border-radius:10px;
+ background:#edf7f2;
+ color:#163b32;
+ font-size:13px;
+ margin-top:10px;
+}
+
+.connection-dot{
+ width:9px;
+ height:9px;
+ border-radius:50%;
+ background:#39b87f;
+ flex:none;
+}
+
+.connection-dot.offline{
+ background:#e74c3c;
+}
+
+.search-info{
+ padding:10px;
+ border-radius:10px;
+ background:#f5f9f7;
+ margin-top:8px;
+ font-size:13px;
+ color:#69756f;
+}
+
+.photo-help{
+ background:#edf7f2;
+ padding:12px;
+ border-radius:12px;
+ font-size:13px;
+ line-height:1.5;
+ margin-bottom:12px;
+}
+
 @media(max-width:500px){
  .row{
   flex-direction:column;
   gap:0;
  }
+
  .grid{
   grid-template-columns:1fr 1fr;
  }
@@ -496,7 +538,6 @@ Halte deinen Fortschritt mit Fotos fest.
 <button onclick="openPage('photos')">
 📸 Fotos öffnen
 </button>
-
 </div>
 
 </section>
@@ -594,10 +635,16 @@ Lebensmittel eingeben, die du zuhause hast.
 
 <input
 id="foodSearch"
-placeholder="z.B. Hähnchen, Reis, Joghurt">
+placeholder="z.B. Hähnchen, Reis, Joghurt"
+autocomplete="off">
 
 <button onclick="searchFoods()">Suchen</button>
 
+</div>
+
+<div id="connectionStatus" class="connection-status">
+<span id="connectionDot" class="connection-dot"></span>
+<span id="connectionText">Internetverbindung wird geprüft...</span>
 </div>
 
 <div id="foodResults"></div>
@@ -701,7 +748,6 @@ Zurücksetzen
 <div class="small">
 Training für:
 </div>
-
 <input id="trainingDate" type="date" onchange="changeTrainingDate()">
 
 </div>
@@ -918,6 +964,12 @@ Gewicht speichern
 
 <div class="card">
 
+<div class="photo-help">
+<b>📱 iPhone-Tipp:</b><br>
+Tippe auf das jeweilige Feld „Foto auswählen“. 
+Dann kannst du aus der <b>Fotomediathek</b> ein vorhandenes Bild auswählen oder ein neues Foto aufnehmen.
+</div>
+
 <p class="small">
 Speichere für jeden Tag oder jede Woche Bilder von vorne,
 von der Seite und von hinten.
@@ -938,7 +990,6 @@ von der Seite und von hinten.
 id="photoFront"
 type="file"
 accept="image/*"
-capture="environment"
 onchange="previewPhoto('front',this)">
 
 </div>
@@ -953,7 +1004,6 @@ onchange="previewPhoto('front',this)">
 id="photoSide"
 type="file"
 accept="image/*"
-capture="environment"
 onchange="previewPhoto('side',this)">
 
 </div>
@@ -968,7 +1018,6 @@ onchange="previewPhoto('side',this)">
 id="photoBack"
 type="file"
 accept="image/*"
-capture="environment"
 onchange="previewPhoto('back',this)">
 
 </div>
@@ -985,7 +1034,6 @@ onchange="previewPhoto('back',this)">
 
 
 <div class="card">
-
 <h3>🖼️ Meine Fortschrittsbilder</h3>
 
 <div id="photoHistory"></div>
@@ -1037,27 +1085,19 @@ const defaultData={
   carbs:250,
   fat:75
  },
-
  days:{},
-
  weights:[],
  measurements:[],
-
  dayPlan:[],
  planSeed:0,
-
  ownedFoods:[],
-
  photos:[]
 };
+
 let data=loadData();
-
 let activeDate=getToday();
-
 let selectedFood=null;
-
 let scanner=null;
-
 let scannerRunning=false;
 
 let pendingPhotos={
@@ -1076,13 +1116,10 @@ function getToday(){
  const d=new Date();
 
  const y=d.getFullYear();
-
  const m=String(d.getMonth()+1).padStart(2,"0");
-
  const day=String(d.getDate()).padStart(2,"0");
 
  return `${y}-${m}-${day}`;
-
 }
 
 
@@ -1095,7 +1132,6 @@ function formatDate(date){
  if(parts.length!==3)return date;
 
  return `${parts[2]}.${parts[1]}.${parts[0]}`;
-
 }
 
 
@@ -1112,16 +1148,28 @@ function getDay(date=activeDate){
  }
 
  return data.days[date];
-
 }
 
 
 function saveData(){
 
- localStorage.setItem(
-  "fitplanData",
-  JSON.stringify(data)
- );
+ try{
+
+  localStorage.setItem(
+   "fitplanData",
+   JSON.stringify(data)
+  );
+
+ }catch(e){
+
+  console.error("Speicherfehler:",e);
+
+  alert(
+   "Die Daten konnten nicht gespeichert werden. " +
+   "Möglicherweise ist der Speicher des Browsers voll."
+  );
+
+ }
 
 }
 
@@ -1147,14 +1195,19 @@ function loadData(){
     goals:{
      ...defaultData.goals,
      ...(parsed.goals||{})
-    }
+    },
+    days:parsed.days||{},
+    weights:Array.isArray(parsed.weights)
+     ?parsed.weights:[],
+    measurements:Array.isArray(parsed.measurements)
+     ?parsed.measurements:[],
+    dayPlan:Array.isArray(parsed.dayPlan)
+     ?parsed.dayPlan:[],
+    ownedFoods:Array.isArray(parsed.ownedFoods)
+     ?parsed.ownedFoods:[],
+    photos:Array.isArray(parsed.photos)
+     ?parsed.photos:[]
    };
-
-   /*
-    Alte Version deiner App:
-    foods/exercises/water werden automatisch
-    dem heutigen Tag zugeordnet.
-   */
 
    if(
     (!parsed.days ||
@@ -1167,10 +1220,10 @@ function loadData(){
 
     result.days[getToday()]={
      foods:Array.isArray(parsed.foods)
-      ? parsed.foods : [],
+      ?parsed.foods:[],
 
      exercises:Array.isArray(parsed.exercises)
-      ? parsed.exercises : [],
+      ?parsed.exercises:[],
 
      water:Number(parsed.water)||0
     };
@@ -1178,19 +1231,17 @@ function loadData(){
    }
 
    return result;
-
   }
 
  }catch(e){
 
-  console.log(e);
+  console.log("Fehler beim Laden:",e);
 
  }
 
  return JSON.parse(
   JSON.stringify(defaultData)
  );
-
 }
 
 
@@ -1225,13 +1276,12 @@ function openPage(page){
   photos:4
  };
 
- if(page==="photos"){
-  document.querySelectorAll("nav button")[4]
-   .classList.add("active");
- }else if(indexes[page]!==undefined){
+ if(indexes[page]!==undefined){
+
   document.querySelectorAll("nav button")
-   [indexes[page]]
+[indexes[page]]
    .classList.add("active");
+
  }
 
  updateAll();
@@ -1249,8 +1299,11 @@ function openPage(page){
   renderPhotoHistory();
  }
 
- window.scrollTo(0,0);
+ if(page==="nutrition"){
+  checkInternetConnection();
+ }
 
+ window.scrollTo(0,0);
 }
 
 
@@ -1265,7 +1318,6 @@ function changeActiveDate(){
   ||getToday();
 
  updateAll();
-
 }
 
 
@@ -1279,7 +1331,6 @@ function changeTrainingDate(){
   activeDate;
 
  updateAll();
-
 }
 
 
@@ -1300,8 +1351,9 @@ function loadGoalInputs(){
 
  document.getElementById("goalFat").value=
   data.goals.fat;
-
 }
+
+
 function saveGoals(){
 
  data.goals={
@@ -1329,7 +1381,6 @@ function saveGoals(){
  "✓ Ziele gespeichert.";
 
  updateAll();
-
 }
 
 
@@ -1367,7 +1418,6 @@ const nutrition={
 function ingredientNutrition(name,grams){
 
  const n=nutrition[name]||[0,0,0,0];
-
  const f=grams/100;
 
  return{
@@ -1376,7 +1426,6 @@ function ingredientNutrition(name,grams){
   carbs:n[2]*f,
   fat:n[3]*f
  };
-
 }
 
 
@@ -1579,7 +1628,6 @@ function recipeNutrition(recipe){
  });
 
  return total;
-
 }
 
 
@@ -1599,7 +1647,6 @@ function generateDayPlan(){
  ];
 
  const shares=[.25,.15,.35,.25];
-
  const plan=[];
 
  types.forEach((type,index)=>{
@@ -1632,10 +1679,7 @@ function generateDayPlan(){
   recipe.ingredients=
    recipe.ingredients.map(item=>[
     item[0],
-    Math.max(
-     1,
-     Math.round(item[1]*factor)
-    )
+    Math.max(1,Math.round(item[1]*factor))
    ]);
 
   plan.push(recipe);
@@ -1647,7 +1691,6 @@ function generateDayPlan(){
  saveData();
 
  renderDayPlan();
-
 }
 
 
@@ -1661,7 +1704,6 @@ function renderDayPlan(){
    "<p class='empty'>Noch kein Tagesplan.</p>";
 
   return;
-
  }
 
  let total={
@@ -1683,8 +1725,7 @@ function renderDayPlan(){
   total.fat+=n.fat;
 
   html+=`
-
-  <div class="recipe">
+<div class="recipe">
 
   <span class="tag">
   ${escapeHtml(recipe.type)}
@@ -1720,9 +1761,7 @@ function renderDayPlan(){
   </button>
 
   </div>
-
   `;
-
  });
 
  html+=`
@@ -1744,11 +1783,9 @@ function renderDayPlan(){
  / ${data.goals.fat} g Fett
 
  </div>
-
  `;
 
  box.innerHTML=html;
-
 }
 
 
@@ -1791,7 +1828,6 @@ function acceptRecipe(index){
   " wurde für "+formatDate(activeDate)+
   " übernommen."
  );
-
 }
 
 
@@ -1801,12 +1837,11 @@ function acceptWholePlan(){
 
   alert("Bitte zuerst einen Tagesplan erstellen.");
   return;
-
  }
 
- data.dayPlan.forEach(recipe=>{
+ const day=getDay(activeDate);
 
-  const day=getDay(activeDate);
+ data.dayPlan.forEach(recipe=>{
 
   recipe.ingredients.forEach(item=>{
 
@@ -1837,7 +1872,6 @@ function acceptWholePlan(){
   formatDate(activeDate)+
   " übernommen."
  );
-
 }
 
 
@@ -1847,11 +1881,9 @@ function acceptWholePlan(){
 
 function addOwnedFoodRow(name="",grams=""){
 
- const box=
-  document.getElementById("ownedFoods");
+ const box=document.getElementById("ownedFoods");
 
- const row=
-  document.createElement("div");
+ const row=document.createElement("div");
 
  row.className="owned-food";
 
@@ -1873,11 +1905,9 @@ function addOwnedFoodRow(name="",grams=""){
  onclick="this.parentElement.remove()">
  ×
  </button>
-
  `;
 
  box.appendChild(row);
-
 }
 
 
@@ -1906,7 +1936,6 @@ function readOwnedFoods(){
  });
 
  return result;
-
 }
 
 
@@ -1921,7 +1950,6 @@ function generateFromOwnedFoods(){
   );
 
   return;
-
  }
 
  data.ownedFoods=owned;
@@ -1946,7 +1974,7 @@ function generateFromOwnedFoods(){
       .includes(o.name.toLowerCase()) ||
 
       o.name.toLowerCase()
-      .includes(i[0].toLowerCase())
+.includes(i[0].toLowerCase())
      )
     )
    );
@@ -1971,14 +1999,113 @@ function generateFromOwnedFoods(){
  });
 
  data.planSeed++;
-
  data.dayPlan=plan;
 
  saveData();
-
  renderDayPlan();
-
 }
+
+
+/* =====================================================
+   INTERNETSTATUS
+===================================================== */
+
+function setConnectionStatus(online,text){
+
+ const dot=
+  document.getElementById("connectionDot");
+
+ const status=
+  document.getElementById("connectionText");
+
+ if(!dot||!status)return;
+
+ dot.classList.toggle("offline",!online);
+
+ status.textContent=
+  text||
+  (online
+   ?"Internetverbindung verfügbar"
+   :"Keine Internetverbindung");
+}
+
+
+async function checkInternetConnection(){
+
+ if(!navigator.onLine){
+
+  setConnectionStatus(
+   false,
+   "Keine Internetverbindung"
+  );
+
+  return false;
+ }
+
+ try{
+
+  const controller=
+   new AbortController();
+
+  const timer=
+   setTimeout(
+    ()=>controller.abort(),
+    5000
+   );
+
+  /*
+   Wir verwenden Open Food Facts direkt.
+   no-cors verhindert zwar das Lesen der Antwort,
+   aber die Anfrage selbst kann als Verbindungstest
+   genutzt werden.
+  */
+
+  await fetch(
+   "https://world.openfoodfacts.org/",
+   {
+    method:"HEAD",
+    mode:"no-cors",
+    cache:"no-store",
+    signal:controller.signal
+   }
+  );
+
+  clearTimeout(timer);
+
+  setConnectionStatus(
+   true,
+   "Internetverbindung verfügbar"
+  );
+
+  return true;
+
+ }catch(e){
+
+  setConnectionStatus(
+   false,
+   "Keine Verbindung zu Open Food Facts"
+  );
+
+  return false;
+ }
+}
+
+
+window.addEventListener(
+ "online",
+ ()=>setConnectionStatus(
+  true,
+  "Internetverbindung verfügbar"
+ )
+);
+
+window.addEventListener(
+ "offline",
+ ()=>setConnectionStatus(
+  false,
+  "Keine Internetverbindung"
+ )
+);
 
 
 /* =====================================================
@@ -1987,9 +2114,10 @@ function generateFromOwnedFoods(){
 
 async function searchFoods(){
 
- const term=
-  document.getElementById("foodSearch")
-  .value.trim();
+ const input=
+  document.getElementById("foodSearch");
+
+ const term=input.value.trim();
 
  const box=
   document.getElementById("foodResults");
@@ -2000,47 +2128,153 @@ async function searchFoods(){
    "<p class='warning'>Bitte Lebensmittel eingeben.</p>";
 
   return;
+ }
 
+ if(!navigator.onLine){
+
+  setConnectionStatus(
+   false,
+   "Keine Internetverbindung"
+  );
+
+  box.innerHTML=`
+
+  <div class="search-info">
+  ⚠️ Dein iPhone ist momentan nicht mit dem Internet verbunden.
+  Die Online-Lebensmittelsuche kann deshalb nicht durchgeführt werden.
+  </div>
+
+  `;
+
+  return;
  }
 
  box.innerHTML=
-  "<p>🔎 Suche...</p>";
+  "<p>🔎 Suche im Internet...</p>";
+
+ setConnectionStatus(
+  true,
+  "Internetverbindung verfügbar"
+ );
 
  try{
 
+  /*
+   Wichtig:
+   api/v2/search ist die aktuelle JSON-API.
+   Dadurch vermeiden wir die alte cgi/search.pl-Adresse.
+  */
+
   const url=
-   "https://world.openfoodfacts.org/cgi/search.pl"+
-   "?search_terms="+
+   "https://world.openfoodfacts.org/api/v2/search"+
+   "?categories_tags_de="+
    encodeURIComponent(term)+
-   "&search_simple=1"+
-   "&action=process"+
-   "&json=1"+
-   "&page_size=8"+
-   "&lc=de";
+   "&page_size=12"+
+   "&fields=product_name,product_name_de,brands,nutriments,code";
 
   const response=
-   await fetch(url);
+   await fetch(
+    url,
+    {
+     method:"GET",
+     headers:{
+      "Accept":"application/json"
+     },
+     cache:"no-store"
+    }
+   );
+
+  if(!response.ok){
+
+   throw new Error(
+    "HTTP "+response.status
+   );
+
+  }
 
   const result=
    await response.json();
 
   box.innerHTML="";
-if(!result.products?.length){
 
-   box.innerHTML=
-    "<p class='empty'>Kein Produkt gefunden.</p>";
+  /*
+   Falls die Kategorie-Suche nichts liefert,
+   wird eine zweite, allgemeinere Suche gemacht.
+  */
+
+  if(!result.products?.length){
+
+   const fallbackUrl=
+    "https://world.openfoodfacts.org/api/v2/search"+
+    "?search_terms="+
+    encodeURIComponent(term)+
+    "&page_size=12"+
+    "&fields=product_name,product_name_de,brands,nutriments,code";
+
+   const fallbackResponse=
+    await fetch(
+fallbackUrl,
+     {
+      method:"GET",
+      headers:{
+       "Accept":"application/json"
+      },
+      cache:"no-store"
+     }
+    );
+
+   if(!fallbackResponse.ok){
+    throw new Error(
+     "Fallback HTTP "+
+     fallbackResponse.status
+    );
+   }
+
+   const fallback=
+    await fallbackResponse.json();
+
+   result.products=
+    fallback.products||[];
+  }
+
+  if(!result.products.length){
+
+   box.innerHTML=`
+
+   <p class="empty">
+   Kein Produkt gefunden.
+   </p>
+
+   <div class="search-info">
+   Tipp: Versuche einen kürzeren Suchbegriff,
+   z.B. „Joghurt“, „Reis“ oder „Hähnchen“.
+   </div>
+
+   `;
 
    return;
-
   }
 
   result.products.forEach(p=>{
 
    const n=p.nutriments||{};
 
-   const kcal=
-    Number(n["energy-kcal_100g"])||
-    (Number(n["energy_100g"])/4.184)||0;
+   let kcal=
+    Number(n["energy-kcal_100g"])||0;
+
+   /*
+    Falls Open Food Facts nur kJ liefert.
+   */
+
+   if(!kcal){
+
+    const kj=
+     Number(n["energy-kj_100g"])||0;
+
+    if(kj){
+     kcal=kj/4.184;
+    }
+   }
 
    const protein=
     Number(n["proteins_100g"])||0;
@@ -2051,6 +2285,22 @@ if(!result.products?.length){
    const fat=
     Number(n["fat_100g"])||0;
 
+   /*
+    Produkte ohne brauchbare Nährwerte überspringen.
+   */
+
+   if(
+    !p.product_name &&
+    !p.product_name_de
+   ){
+    return;
+   }
+
+   const name=
+    p.product_name_de||
+    p.product_name||
+    "Unbekannt";
+
    const div=
     document.createElement("div");
 
@@ -2059,10 +2309,16 @@ if(!result.products?.length){
    div.innerHTML=`
 
    <b>
-   ${escapeHtml(
-    p.product_name||"Unbekannt"
-   )}
+   ${escapeHtml(name)}
    </b>
+
+   ${
+    p.brands
+    ?`<br><span class="small">
+       ${escapeHtml(p.brands)}
+      </span>`
+    :""
+   }
 
    <br>
 
@@ -2080,7 +2336,7 @@ if(!result.products?.length){
    div.onclick=()=>{
 
     selectedFood={
-     name:p.product_name||"Lebensmittel",
+     name,
      calories:kcal,
      protein,
      carbs,
@@ -2100,21 +2356,50 @@ if(!result.products?.length){
 
     updateSelectedFood();
 
+    document.getElementById(
+     "selectedFoodCard"
+    ).scrollIntoView({
+     behavior:"smooth",
+     block:"center"
+    });
    };
 
    box.appendChild(div);
 
   });
 
+  if(!box.children.length){
+
+   box.innerHTML=
+    "<p class='empty'>Keine Produkte mit brauchbaren Daten gefunden.</p>";
+
+  }
+
  }catch(e){
 
-  console.error(e);
+  console.error(
+   "Open Food Facts Fehler:",
+   e
+  );
 
-  box.innerHTML=
-   "<p class='warning'>Die Internetsuche konnte nicht geladen werden.</p>";
+  setConnectionStatus(
+   false,
+   "Lebensmittelsuche konnte nicht erreicht werden"
+  );
 
+  box.innerHTML=`
+
+  <p class="warning">
+  ⚠️ Die Internetsuche konnte nicht geladen werden.
+  </p>
+
+  <div class="search-info">
+  Bitte prüfe die Internetverbindung deines iPhones
+  und versuche es anschließend erneut.
+  </div>
+
+  `;
  }
-
 }
 
 
@@ -2145,9 +2430,7 @@ function updateSelectedFood(){
  🥑 ${(selectedFood.fat*f).toFixed(1)} g Fett
 
  </div>
-
  `;
-
 }
 
 
@@ -2171,21 +2454,18 @@ function addSelectedFood(){
 
   alert("Bitte eine gültige Menge eingeben.");
   return;
-
  }
 
  const f=grams/100;
-
  const day=getDay(activeDate);
 
  day.foods.push({
 
   name:selectedFood.name,
-
   grams,
 
   meal:
-   document.getElementById("foodMeal").value,
+document.getElementById("foodMeal").value,
 
   calories:
    selectedFood.calories*f,
@@ -2210,7 +2490,6 @@ function addSelectedFood(){
  ).style.display="none";
 
  updateAll();
-
 }
 
 
@@ -2229,7 +2508,14 @@ async function startScanner(){
    "📷 Scanner läuft bereits.";
 
   return;
+ }
 
+ if(!navigator.onLine){
+
+  status.textContent=
+   "⚠️ Internetverbindung fehlt.";
+
+  return;
  }
 
  if(typeof Html5Qrcode==="undefined"){
@@ -2238,7 +2524,6 @@ async function startScanner(){
    "⚠️ Barcode-Scanner konnte nicht geladen werden.";
 
   return;
-
  }
 
  try{
@@ -2283,7 +2568,8 @@ async function startScanner(){
     document.getElementById(
      "foodSearch"
     ).value=decodedText;
-stopScanner();
+
+    stopScanner();
 
     searchFoods();
 
@@ -2307,7 +2593,6 @@ stopScanner();
    "⚠️ Kamera konnte nicht gestartet werden. Bitte den Kamerazugriff erlauben.";
 
  }
-
 }
 
 
@@ -2341,7 +2626,6 @@ async function stopScanner(){
   "scannerStatus"
  ).textContent=
   "Scanner gestoppt.";
-
 }
 
 
@@ -2357,9 +2641,7 @@ function addWater(amount){
   Number(day.water||0)+amount;
 
  saveData();
-
  updateAll();
-
 }
 
 
@@ -2370,9 +2652,7 @@ function resetWater(){
  day.water=0;
 
  saveData();
-
  updateAll();
-
 }
 
 
@@ -2387,9 +2667,7 @@ function deleteFood(index){
  day.foods.splice(index,1);
 
  saveData();
-
  updateAll();
-
 }
 
 
@@ -2407,9 +2685,7 @@ function addExercise(){
  if(!name){
 
   alert("Bitte Übung eingeben.");
-
   return;
-
  }
 
  const day=getDay(activeDate);
@@ -2458,9 +2734,7 @@ function addExercise(){
  ).value=0;
 
  saveData();
-
  updateAll();
-
 }
 
 
@@ -2471,9 +2745,7 @@ function deleteExercise(index){
  day.exercises.splice(index,1);
 
  saveData();
-
- updateAll();
-
+updateAll();
 }
 
 
@@ -2500,7 +2772,6 @@ function renderExercises(){
    "Noch kein Training.";
 
   return;
-
  }
 
  box.innerHTML=
@@ -2535,7 +2806,6 @@ function renderExercises(){
  home.innerHTML=
   day.exercises.length+
   " Übungen eingetragen.";
-
 }
 
 
@@ -2555,17 +2825,12 @@ function saveWeight(){
  if(!value){
 
   alert("Bitte Gewicht eingeben.");
-
   return;
-
  }
 
  data.weights.push({
-
   date:activeDate,
-
   value
-
  });
 
  saveData();
@@ -2575,9 +2840,7 @@ function saveWeight(){
  ).value="";
 
  updateAll();
-
  drawChart();
-
 }
 
 
@@ -2594,7 +2857,6 @@ function renderWeightTable(){
    "<tr><td>Keine Daten.</td></tr>";
 
   return;
-
  }
 
  box.innerHTML=
@@ -2603,12 +2865,11 @@ function renderWeightTable(){
   .map(w=>`
 
   <tr>
-<td>${formatDate(w.date)}</td>
+  <td>${formatDate(w.date)}</td>
   <td>${w.value} kg</td>
   </tr>
 
   `).join("");
-
 }
 
 
@@ -2664,15 +2925,11 @@ function saveMeasurements(){
   );
 
   return;
-
  }
 
  data.measurements.push({
-
   date:activeDate,
-
   ...values
-
  });
 
  saveData();
@@ -2682,7 +2939,6 @@ function saveMeasurements(){
  ).forEach(i=>i.value="");
 
  updateAll();
-
 }
 
 
@@ -2699,7 +2955,6 @@ function renderMeasurementTable(){
    "<tr><td>Keine Daten.</td></tr>";
 
   return;
-
  }
 
  box.innerHTML=
@@ -2719,7 +2974,6 @@ function renderMeasurementTable(){
   </tr>
 
   `).join("");
-
 }
 
 
@@ -2768,7 +3022,6 @@ function drawChart(){
   );
 
   return;
-
  }
 
  const min=
@@ -2781,8 +3034,7 @@ function drawChart(){
  ctx.lineWidth=1;
 
  ctx.beginPath();
-
- ctx.moveTo(40,20);
+ctx.moveTo(40,20);
  ctx.lineTo(40,height-30);
  ctx.lineTo(width-15,height-30);
 
@@ -2799,10 +3051,7 @@ function drawChart(){
    45+
    i*
    ((width-65)/
-   Math.max(
-    1,
-    values.length-1
-   ));
+   Math.max(1,values.length-1));
 
   const y=
    20+
@@ -2825,10 +3074,7 @@ function drawChart(){
    45+
    i*
    ((width-65)/
-   Math.max(
-    1,
-    values.length-1
-   ));
+   Math.max(1,values.length-1));
 
   const y=
    20+
@@ -2855,7 +3101,6 @@ function drawChart(){
   );
 
  });
-
 }
 
 
@@ -2886,7 +3131,6 @@ function renderFoods(){
    "<p class='empty'>Noch nichts eingetragen.</p>";
 
   return;
-
  }
 
  const html=
@@ -2901,7 +3145,7 @@ function renderFoods(){
  <span class="small">
 
  ${f.grams} g ·
-${escapeHtml(f.meal)}
+ ${escapeHtml(f.meal)}
 
  <br>
 
@@ -2925,9 +3169,7 @@ ${escapeHtml(f.meal)}
  `).join("");
 
  foodList.innerHTML=html;
-
  home.innerHTML=html;
-
 }
 
 
@@ -2968,7 +3210,6 @@ function calculateDay(date){
   foods:day.foods,
   exercises:day.exercises
  };
-
 }
 
 
@@ -2978,13 +3219,17 @@ function calculateDay(date){
 
 function updateAll(){
 
- document.getElementById(
-  "activeDate"
- ).value=activeDate;
+ const activeInput=
+  document.getElementById("activeDate");
 
- document.getElementById(
-  "trainingDate"
- ).value=activeDate;
+ const trainingInput=
+  document.getElementById("trainingDate");
+
+ if(activeInput)
+  activeInput.value=activeDate;
+
+ if(trainingInput)
+  trainingInput.value=activeDate;
 
  const totals=
   calculateDay(activeDate);
@@ -3043,10 +3288,7 @@ function updateAll(){
   Math.min(
    100,
    totals.calories/
-   Math.max(
-    1,
-    data.goals.calories
-   )*100
+   Math.max(1,data.goals.calories)*100
   );
 
  document.getElementById(
@@ -3055,7 +3297,7 @@ function updateAll(){
   percentage+"%";
 
  const weightEntries=
-  data.weights.filter(
+data.weights.filter(
    w=>w.date===activeDate
   );
 
@@ -3079,7 +3321,6 @@ function updateAll(){
  renderWeightTable();
  renderMeasurementTable();
  renderDayPlan();
-
 }
 
 
@@ -3145,7 +3386,6 @@ function renderHistory(){
 
   html+=
    "<p class='empty'>Kein Essen eingetragen.</p>";
-
  }
 
  html+=`<h4>🏋️ Training</h4>`;
@@ -3157,7 +3397,8 @@ function renderHistory(){
    <div class="item">
 
    <b>${escapeHtml(e.name)}</b><br>
-<span class="small">
+
+   <span class="small">
    ${e.sets} Sätze ×
    ${e.reps} Wdh. ·
    ${e.weight} kg
@@ -3171,7 +3412,6 @@ function renderHistory(){
 
   html+=
    "<p class='empty'>Kein Training eingetragen.</p>";
-
  }
 
  html+=`
@@ -3181,11 +3421,9 @@ function renderHistory(){
  <p>${day.water} ml</p>
 
  </div>
-
  `;
 
  box.innerHTML=html;
-
 }
 
 
@@ -3210,7 +3448,6 @@ function getMonday(dateString){
  );
 
  return d;
-
 }
 
 
@@ -3219,17 +3456,12 @@ function dateToString(d){
  const y=d.getFullYear();
 
  const m=
-  String(
-   d.getMonth()+1
-  ).padStart(2,"0");
+  String(d.getMonth()+1).padStart(2,"0");
 
  const day=
-  String(
-   d.getDate()
-  ).padStart(2,"0");
+  String(d.getDate()).padStart(2,"0");
 
  return `${y}-${m}-${day}`;
-
 }
 
 
@@ -3298,9 +3530,7 @@ function renderWeek(){
   </span>
 
   </div>
-
   `;
-
  }
 
  const averageCalories=
@@ -3339,13 +3569,11 @@ function renderWeek(){
  ${trainingDays} von 7 Tagen
 
  </div>
-
  `;
 
  document.getElementById(
   "weekDays"
- ).innerHTML=daysHtml;
-
+).innerHTML=daysHtml;
 }
 
 
@@ -3359,26 +3587,87 @@ function previewPhoto(type,input){
 
  if(!file)return;
 
- const reader=
-  new FileReader();
+ /*
+  Bildgröße reduzieren.
+  Das verhindert, dass localStorage durch iPhone-Fotos
+  sehr schnell voll läuft.
+ */
+
+ const reader=new FileReader();
 
  reader.onload=function(e){
 
-  pendingPhotos[type]=e.target.result;
+  const img=new Image();
 
-  const img=
-   document.getElementById(
-    "preview"+
-    type.charAt(0).toUpperCase()+
-    type.slice(1)
+  img.onload=function(){
+
+   const maxSize=1200;
+
+   let width=img.width;
+   let height=img.height;
+
+   if(width>maxSize||height>maxSize){
+
+    if(width>height){
+
+     height=
+      Math.round(
+       height*maxSize/width
+      );
+
+     width=maxSize;
+
+    }else{
+
+     width=
+      Math.round(
+       width*maxSize/height
+      );
+
+     height=maxSize;
+    }
+   }
+
+   const canvas=
+    document.createElement("canvas");
+
+   canvas.width=width;
+   canvas.height=height;
+
+   const ctx=
+    canvas.getContext("2d");
+
+   ctx.drawImage(
+    img,
+    0,
+    0,
+    width,
+    height
    );
 
-  img.src=e.target.result;
+   const compressed=
+    canvas.toDataURL(
+     "image/jpeg",
+     .82
+    );
 
+   pendingPhotos[type]=compressed;
+
+   const imgElement=
+    document.getElementById(
+     "preview"+
+     type.charAt(0).toUpperCase()+
+     type.slice(1)
+    );
+
+   imgElement.src=compressed;
+
+  };
+
+  img.src=e.target.result;
  };
 
  reader.readAsDataURL(file);
-
 }
 
 
@@ -3400,7 +3689,6 @@ function saveProgressPhotos(){
   );
 
   return;
-
  }
 
  const existing=
@@ -3438,7 +3726,19 @@ function saveProgressPhotos(){
 
  }
 
- saveData();
+ try{
+
+  saveData();
+
+ }catch(e){
+
+  alert(
+   "Die Fotos konnten nicht gespeichert werden. " +
+   "Bitte eventuell ältere Fotos löschen."
+  );
+
+  return;
+ }
 
  pendingPhotos={
   front:null,
@@ -3459,11 +3759,10 @@ function saveProgressPhotos(){
  ).value="";
 
  alert(
-"✓ Fortschrittsbilder gespeichert."
+  "✓ Fortschrittsbilder gespeichert."
  );
 
  renderPhotoHistory();
-
 }
 
 
@@ -3480,7 +3779,6 @@ function renderPhotoHistory(){
    "<p class='empty'>Noch keine Fortschrittsbilder gespeichert.</p>";
 
   return;
-
  }
 
  box.innerHTML=
@@ -3535,7 +3833,6 @@ function renderPhotoHistory(){
  </div>
 
  `).join("");
-
 }
 
 
@@ -3559,14 +3856,6 @@ function deletePhoto(index){
   realIndex,
   1
  );
-
- saveData();
-
- renderPhotoHistory();
-
-}
-
-
 /* =====================================================
    SICHERES HTML
 ===================================================== */
@@ -3579,7 +3868,6 @@ function escapeHtml(text){
  .replace(/>/g,"&gt;")
  .replace(/"/g,"&quot;")
  .replace(/'/g,"&#039;");
-
 }
 
 
@@ -3619,16 +3907,15 @@ if(data.ownedFoods?.length){
    f.grams
   )
  );
-
 }
 
 updateAll();
 
 renderHistory();
-
 renderWeek();
-
 renderPhotoHistory();
+
+checkInternetConnection();
 
 
 /* =====================================================
@@ -3642,7 +3929,25 @@ if("serviceWorker" in navigator){
   ()=>{
 
    navigator.serviceWorker
-   .register("service-worker.js")
+   .register(
+    "service-worker.js",
+    {
+     updateViaCache:"none"
+    }
+   )
+   .then(reg=>{
+    console.log(
+     "Service Worker registriert",
+     reg
+    );
+
+    /*
+     Nach einer neuen Version aktivieren wir
+     den Service Worker möglichst schnell.
+    */
+
+    reg.update();
+   })
    .catch(err=>{
     console.log(
      "Service Worker Fehler:",
@@ -3652,10 +3957,154 @@ if("serviceWorker" in navigator){
 
   }
  );
-
 }
 
 </script>
 
 </body>
 </html>
+```
+
+Danach `service-worker.js`
+
+Deine bisherige Datei solltest du ebenfalls komplett durch diese Version ersetzen:
+
+```javascript
+const CACHE_NAME = "fitplan-v2";
+
+const FILES_TO_CACHE = [
+  "./",
+  "./index.html",
+  "./manifest.json"
+];
+
+self.addEventListener("install", event => {
+
+  event.waitUntil(
+
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(FILES_TO_CACHE))
+
+  );
+
+  self.skipWaiting();
+
+});
+
+
+self.addEventListener("activate", event => {
+
+  event.waitUntil(
+
+    caches.keys().then(keys =>
+
+      Promise.all(
+
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+
+      )
+
+    )
+
+  );
+
+  self.clients.claim();
+
+});
+
+
+self.addEventListener("fetch", event => {
+
+  const request = event.request;
+
+  /*
+   API-Anfragen NICHT aus dem Cache bedienen.
+   Dadurch kann die Lebensmittel-Suche tatsächlich
+   das Internet/Open Food Facts erreichen.
+  */
+
+  if(
+    request.url.includes("openfoodfacts.org")
+  ){
+
+    event.respondWith(
+
+      fetch(request)
+        .catch(() => {
+
+          return new Response(
+            JSON.stringify({
+              offline:true,
+              products:[]
+            }),
+            {
+              headers:{
+                "Content-Type":
+                "application/json"
+              }
+            }
+          );
+
+        })
+
+    );
+
+    return;
+  }
+
+
+  /*
+   Normale App-Dateien:
+   zuerst Netzwerk versuchen, danach Cache.
+   So bekommt die App Updates, wenn Internet vorhanden ist.
+  */
+
+  event.respondWith(
+
+    fetch(request)
+      .then(response => {
+
+        if(
+          response &&
+          response.status === 200 &&
+          request.method === "GET"
+        ){
+
+          const copy=response.clone();
+
+          caches.open(CACHE_NAME)
+            .then(cache=>{
+              cache.put(request,copy);
+            });
+
+        }
+
+        return response;
+
+      })
+      .catch(() =>
+
+        caches.match(request)
+          .then(cachedResponse => {
+
+            if(cachedResponse){
+              return cachedResponse;
+            }
+
+            return caches.match("./index.html");
+
+          })
+
+      )
+
+  );
+
+});
+```
+
+ saveData();
+
+ renderPhotoHistory();
+}
