@@ -3347,6 +3347,8 @@ function renderWeek(){
  ).innerHTML=daysHtml;
 
 }
+
+
 /* =====================================================
    FORTSCHRITTSBILDER
 ===================================================== */
@@ -3357,89 +3359,21 @@ function previewPhoto(type,input){
 
  if(!file)return;
 
- compressPhoto(file, function(result){
-
-  pendingPhotos[type]=result;
-
-  const id=
-   "preview"+
-   type.charAt(0).toUpperCase()+
-   type.slice(1);
-
-  const img=document.getElementById(id);
-
-  if(img){
-   img.src=result;
-  }
-
- });
-
-}
-
-
-/*
-   Fotos werden automatisch verkleinert.
-   Dadurch passen auch iPhone-Fotos in den Speicher.
-*/
-function compressPhoto(file,callback){
-
- const reader=new FileReader();
+ const reader=
+  new FileReader();
 
  reader.onload=function(e){
 
-  const img=new Image();
+  pendingPhotos[type]=e.target.result;
 
-  img.onload=function(){
-
- const img=new Image();
-
-  img.onload=function(){
-
-   const maxWidth=900;
-   const maxHeight=1200;
-
-   let width=img.width;
-   let height=img.height;
-
-   const scale=Math.min(
-    maxWidth/width,
-    maxHeight/height,
-    1
+  const img=
+   document.getElementById(
+    "preview"+
+    type.charAt(0).toUpperCase()+
+    type.slice(1)
    );
 
-   width=Math.round(width*scale);
-   height=Math.round(height*scale);
-
-   const canvas=document.createElement("canvas");
-
-   canvas.width=width;
-   canvas.height=height;
-
-   const ctx=canvas.getContext("2d");
-
-   ctx.drawImage(
-    img,
-    0,
-    0,
-    width,
-    height
-   );
-
-   /*
-      JPEG mit reduzierter Qualität.
-      Das spart sehr viel Speicher.
-   */
-   const compressed=
-    canvas.toDataURL(
-     "image/jpeg",
-     0.72
-    );
-
-   callback(compressed);
-
-  };
-
- img.src=e.target.result;
+  img.src=e.target.result;
 
  };
 
@@ -3469,30 +3403,27 @@ function saveProgressPhotos(){
 
  }
 
- let existing=
+ const existing=
   data.photos.find(
    p=>p.date===date
   );
 
  if(existing){
 
-  if(pendingPhotos.front){
+  if(pendingPhotos.front)
    existing.front=pendingPhotos.front;
-  }
 
-  if(pendingPhotos.side){
+  if(pendingPhotos.side)
    existing.side=pendingPhotos.side;
-  }
 
-  if(pendingPhotos.back){
+  if(pendingPhotos.back)
    existing.back=pendingPhotos.back;
-  }
 
  }else{
 
   data.photos.push({
 
-   date:date,
+   date,
 
    front:
     pendingPhotos.front||null,
@@ -3507,21 +3438,7 @@ function saveProgressPhotos(){
 
  }
 
- try{
-
-  saveData();
-
- }catch(error){
-
-  console.error(error);
-
-  alert(
-   "Die Bilder sind zu groß für den Browser-Speicher. Bitte ein Foto weniger speichern oder ältere Bilder löschen."
-  );
-
-  return;
-
- }
+ saveData();
 
  pendingPhotos={
   front:null,
@@ -3530,7 +3447,7 @@ function saveProgressPhotos(){
  };
 
  document.getElementById(
-"photoFront"
+  "photoFront"
  ).value="";
 
  document.getElementById(
@@ -3541,17 +3458,11 @@ function saveProgressPhotos(){
   "photoBack"
  ).value="";
 
- /*
-    Vorschau stehen lassen,
-    damit man direkt sieht,
-    dass das Foto gespeichert wurde.
- */
+ alert(
+"✓ Fortschrittsbilder gespeichert."
+ );
 
  renderPhotoHistory();
-
- alert(
-  "✓ Fortschrittsbilder gespeichert."
- );
 
 }
 
@@ -3563,79 +3474,62 @@ function renderPhotoHistory(){
    "photoHistory"
   );
 
- if(!box)return;
-
  if(!data.photos.length){
 
   box.innerHTML=
-"<p class='empty'>Noch keine Fortschrittsbilder vorhanden.</p>";
+   "<p class='empty'>Noch keine Fortschrittsbilder gespeichert.</p>";
 
   return;
 
  }
 
- const sorted=
-  [...data.photos].sort(
-  (a,b)=>
-    b.date.localeCompare(a.date)
-  );
-
  box.innerHTML=
-  sorted.map((p,i)=>`
+  [...data.photos]
+  .sort(
+   (a,b)=>
+    b.date.localeCompare(a.date)
+  )
+  .map((p,i)=>`
 
  <div class="history-day">
 
- <h3>
- 📅 ${formatDate(p.date)}
- </h3>
+ <h3>📅 ${formatDate(p.date)}</h3>
 
  <div class="photo-history">
 
  ${
   p.front
-  ?`
-   <div>
+  ?`<div>
     <div class="small">Vorne</div>
-    <img
-     src="${p.front}"
-     alt="Fortschritt vorne">
-   </div>
-  `
+    <img src="${p.front}" alt="Vorne">
+   </div>`
   :""
  }
 
  ${
   p.side
-  ?`
-   <div>
+  ?`<div>
     <div class="small">Seite</div>
-    <img
-     src="${p.side}"
-     alt="Fortschritt Seite">
-   </div>
-  `
+    <img src="${p.side}" alt="Seite">
+   </div>`
   :""
  }
 
  ${
   p.back
-  ?`
-   <div>
+  ?`<div>
     <div class="small">Hinten</div>
-    <img
-     src="${p.back}"
-     alt="Fortschritt hinten">
-   </div>
-  `
+    <img src="${p.back}" alt="Hinten">
+   </div>`
   :""
  }
 
  </div>
 
  <button
-  class="red"
-  onclick="deletePhoto(${i})">
-  🗑️ Bilder löschen
+ class="red"
+ onclick="deletePhoto(${i})">
+ Bilder löschen
  </button>
 
  </div>
@@ -3648,7 +3542,8 @@ function renderPhotoHistory(){
 function deletePhoto(index){
 
  const sorted=
-  [...data.photos].sort(
+  [...data.photos]
+  .sort(
    (a,b)=>
     b.date.localeCompare(a.date)
   );
@@ -3657,46 +3552,19 @@ function deletePhoto(index){
 
  if(!item)return;
 
- if(
-  !confirm(
-   "Möchtest du die Fortschrittsbilder dieses Tages wirklich löschen?"
-  )
- ){
-  return;
- }
-
  const realIndex=
- data.photos.indexOf(item);
+  data.photos.indexOf(item);
 
- if(realIndex!==-1){
-
-  data.photos.splice(
-   realIndex,
-   1
-  );
-
- }
+ data.photos.splice(
+  realIndex,
+  1
+ );
 
  saveData();
 
  renderPhotoHistory();
 
 }
-
-
-/* =====================================================
-   FORTSCHRITTSBILDER IM TAGESVERLAUF
-===================================================== */
-
-function getPhotosForDate(date){
-
- return data.photos.find(
-  p=>p.date===date
- );
-
-}
-```
-
 
 
 /* =====================================================
@@ -3791,4 +3659,3 @@ if("serviceWorker" in navigator){
 
 </body>
 </html>
-```
